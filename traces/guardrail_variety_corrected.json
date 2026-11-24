@@ -1,0 +1,429 @@
+{
+  "description": "INJECTED FAULT: the engine misses a variety request; one stronger re-rank fixes it.",
+  "command": "python3 -m src.evaluate --write-traces traces",
+  "injected_fault": "the engine ignores variety unless the penalty is at least 3.0",
+  "query": "pop party music with different artists",
+  "status": "ok",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "pop party music with different artists",
+      "options": {
+        "count": 6,
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "discovery",
+      "best_label": "discovery",
+      "relative_score": 0.8519,
+      "margin": 0.7089,
+      "known_features": 3,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [
+        "pop"
+      ],
+      "moods": [],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'discovery' with explicit preferences"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "pop party music with different artists",
+        "goal_token": "goal_discovery"
+      }
+    },
+    {
+      "seq": 9,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-PARTY",
+          "kind": "goal",
+          "score": 0.2847,
+          "matched": [
+            "party"
+          ]
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-ARTIST",
+          "kind": "strategy",
+          "score": 0.2759,
+          "matched": [
+            "different artists"
+          ]
+        },
+        {
+          "id": "KB-GOAL-DISCOVERY",
+          "kind": "goal",
+          "score": 0.1954,
+          "matched": [
+            "goal_discovery"
+          ]
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-GENRE",
+          "kind": "strategy",
+          "score": 0.1246,
+          "matched": []
+        },
+        {
+          "id": "KB-POLICY-FILTER-BUBBLE",
+          "kind": "policy",
+          "score": 0.0876,
+          "matched": []
+        },
+        {
+          "id": "KB-STRAT-VARIETY",
+          "kind": "strategy",
+          "score": 0.0781,
+          "matched": []
+        },
+        {
+          "id": "KB-FEAT-TEMPO",
+          "kind": "feature",
+          "score": 0.0681,
+          "matched": []
+        },
+        {
+          "id": "KB-POLICY-SYNTHETIC",
+          "kind": "policy",
+          "score": 0.0531,
+          "matched": []
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "pop party music with different artists",
+        "goal_token": "goal_party",
+        "repeat": true
+      }
+    },
+    {
+      "seq": 11,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-PARTY",
+          "kind": "goal",
+          "score": 0.3843,
+          "matched": [
+            "party",
+            "goal_party"
+          ]
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-ARTIST",
+          "kind": "strategy",
+          "score": 0.2759,
+          "matched": [
+            "different artists"
+          ]
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-GENRE",
+          "kind": "strategy",
+          "score": 0.1246,
+          "matched": []
+        },
+        {
+          "id": "KB-GOAL-DISCOVERY",
+          "kind": "goal",
+          "score": 0.1008,
+          "matched": []
+        },
+        {
+          "id": "KB-POLICY-FILTER-BUBBLE",
+          "kind": "policy",
+          "score": 0.0876,
+          "matched": []
+        },
+        {
+          "id": "KB-STRAT-VARIETY",
+          "kind": "strategy",
+          "score": 0.0781,
+          "matched": []
+        },
+        {
+          "id": "KB-FEAT-TEMPO",
+          "kind": "feature",
+          "score": 0.0681,
+          "matched": []
+        },
+        {
+          "id": "KB-POLICY-SYNTHETIC",
+          "kind": "policy",
+          "score": 0.0531,
+          "matched": []
+        }
+      ]
+    },
+    {
+      "seq": 12,
+      "step": "retrieve",
+      "event": "goal_resolved",
+      "model_goal": "discovery",
+      "goals_with_keyword_evidence": [
+        "party"
+      ],
+      "final_goal": "party",
+      "changed": true
+    },
+    {
+      "seq": 13,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 6,
+      "goal": "party",
+      "goal_source": "retrieval",
+      "goal_profile_applied": true,
+      "goal_note": "the intent model said 'discovery' (relative score 0.85), but the request contains the party word(s) 'party', so 'party' was used",
+      "soft_preferences": {
+        "mood": {
+          "value": "happy",
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "likes_acoustic": {
+          "value": false,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "energy": {
+          "value": 0.85,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "valence": {
+          "value": 0.85,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "danceability": {
+          "value": 0.88,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "genre": {
+          "value": "pop",
+          "origin": "explicit",
+          "source": "request",
+          "overridden": []
+        }
+      },
+      "hard_constraints": [],
+      "mode": "balanced",
+      "mode_source": "KB-GOAL-PARTY",
+      "diversity": {
+        "artist_penalty": 0.75,
+        "genre_penalty": 0.0,
+        "source": "KB-STRAT-DIVERSITY-ARTIST"
+      },
+      "applied_sources": [
+        "KB-GOAL-PARTY",
+        "KB-STRAT-DIVERSITY-ARTIST"
+      ],
+      "adjustments": [],
+      "conflicts": [],
+      "not_applied": []
+    },
+    {
+      "seq": 14,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "filter_catalog",
+      "args": {
+        "constraints": []
+      }
+    },
+    {
+      "seq": 15,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "filter_catalog",
+      "catalog": 30,
+      "candidates": 30,
+      "removed_by": []
+    },
+    {
+      "seq": 16,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "rank_songs",
+      "args": {
+        "mode": "balanced",
+        "k": 6,
+        "candidates": 30,
+        "artist_penalty": 0.75,
+        "genre_penalty": 0.0
+      }
+    },
+    {
+      "seq": 17,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "rank_songs",
+      "returned": [
+        1,
+        11,
+        5,
+        30,
+        24,
+        12
+      ],
+      "scores": [
+        6.8,
+        6.75,
+        5.275,
+        5.245,
+        4.79,
+        4.735
+      ]
+    },
+    {
+      "seq": 18,
+      "step": "validate",
+      "event": "tool_call",
+      "tool": "validate_results",
+      "args": {
+        "returned": 6
+      }
+    },
+    {
+      "seq": 19,
+      "step": "validate",
+      "event": "tool_result",
+      "tool": "validate_results",
+      "ok": true,
+      "issues": [
+        {
+          "code": "DIVERSITY_GOAL_MISSED",
+          "severity": "warning",
+          "detail": "variety across artists was requested but max pulse repeats although 24 different artists were available"
+        }
+      ]
+    },
+    {
+      "seq": 20,
+      "step": "correct",
+      "event": "correction_attempt",
+      "attempt": 1,
+      "strategy": "strengthen_variety",
+      "addressed": [
+        "DIVERSITY_GOAL_MISSED"
+      ]
+    },
+    {
+      "seq": 21,
+      "step": "validate",
+      "event": "tool_call",
+      "tool": "validate_results",
+      "args": {
+        "returned": 6
+      }
+    },
+    {
+      "seq": 22,
+      "step": "validate",
+      "event": "tool_result",
+      "tool": "validate_results",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 23,
+      "step": "validate",
+      "event": "sources_checked",
+      "cited": [
+        "KB-GOAL-PARTY",
+        "KB-STRAT-DIVERSITY-ARTIST",
+        "KB-POLICY-SYNTHETIC",
+        "KB-POLICY-INFERENCE",
+        "KB-POLICY-COVERAGE"
+      ],
+      "removed": []
+    },
+    {
+      "seq": 24,
+      "step": "final",
+      "event": "final_status",
+      "status": "ok",
+      "returned": [
+        1,
+        11,
+        5,
+        24,
+        12,
+        10
+      ],
+      "warnings": [],
+      "corrections": 1
+    }
+  ]
+}

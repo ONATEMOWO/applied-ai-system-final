@@ -1,0 +1,297 @@
+{
+  "description": "Workout request: explicit mood from the wording plus a retrieved goal profile.",
+  "command": "python3 -m src.assistant --query \"Give me energetic music for a workout\" --trace-file traces/workout.json",
+  "injected_fault": null,
+  "query": "Give me energetic music for a workout",
+  "status": "ok",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "Give me energetic music for a workout",
+      "options": {
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "workout",
+      "best_label": "workout",
+      "relative_score": 0.9339,
+      "margin": 0.8784,
+      "known_features": 2,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [
+        "energetic"
+      ],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'workout' with explicit preferences"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "Give me energetic music for a workout",
+        "goal_token": "goal_workout"
+      }
+    },
+    {
+      "seq": 9,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-WORKOUT",
+          "kind": "goal",
+          "score": 0.2814,
+          "matched": [
+            "workout",
+            "goal_workout"
+          ]
+        },
+        {
+          "id": "KB-MOD-HIGH-ENERGY",
+          "kind": "modifier",
+          "score": 0.1226,
+          "matched": [
+            "energetic"
+          ]
+        },
+        {
+          "id": "KB-FEAT-ENERGY",
+          "kind": "feature",
+          "score": 0.1055,
+          "matched": [
+            "energetic"
+          ]
+        },
+        {
+          "id": "KB-MOD-LOW-ENERGY",
+          "kind": "modifier",
+          "score": 0.0925,
+          "matched": []
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "step": "retrieve",
+      "event": "goal_resolved",
+      "model_goal": "workout",
+      "goals_with_keyword_evidence": [
+        "workout"
+      ],
+      "final_goal": "workout",
+      "changed": false
+    },
+    {
+      "seq": 11,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 5,
+      "goal": "workout",
+      "goal_source": "classifier",
+      "goal_profile_applied": true,
+      "goal_note": "",
+      "soft_preferences": {
+        "mood": {
+          "value": "energetic",
+          "origin": "explicit",
+          "source": "request",
+          "overridden": []
+        },
+        "likes_acoustic": {
+          "value": false,
+          "origin": "inferred",
+          "source": "KB-GOAL-WORKOUT",
+          "overridden": []
+        },
+        "energy": {
+          "value": 0.9,
+          "origin": "inferred",
+          "source": "KB-MOD-HIGH-ENERGY",
+          "overridden": [
+            "KB-GOAL-WORKOUT=0.92"
+          ]
+        },
+        "danceability": {
+          "value": 0.75,
+          "origin": "inferred",
+          "source": "KB-GOAL-WORKOUT",
+          "overridden": []
+        },
+        "tempo_bpm": {
+          "value": 135.0,
+          "origin": "inferred",
+          "source": "KB-MOD-HIGH-ENERGY",
+          "overridden": [
+            "KB-GOAL-WORKOUT=140"
+          ]
+        }
+      },
+      "hard_constraints": [],
+      "mode": "balanced",
+      "mode_source": "KB-GOAL-WORKOUT",
+      "diversity": {
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0,
+        "source": "default"
+      },
+      "applied_sources": [
+        "KB-GOAL-WORKOUT",
+        "KB-MOD-HIGH-ENERGY"
+      ],
+      "adjustments": [],
+      "conflicts": [],
+      "not_applied": []
+    },
+    {
+      "seq": 12,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "filter_catalog",
+      "args": {
+        "constraints": []
+      }
+    },
+    {
+      "seq": 13,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "filter_catalog",
+      "catalog": 30,
+      "candidates": 30,
+      "removed_by": []
+    },
+    {
+      "seq": 14,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "rank_songs",
+      "args": {
+        "mode": "balanced",
+        "k": 5,
+        "candidates": 30,
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0
+      }
+    },
+    {
+      "seq": 15,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "rank_songs",
+      "returned": [
+        21,
+        30,
+        19,
+        28,
+        5
+      ],
+      "scores": [
+        4.8367,
+        4.7633,
+        4.695,
+        4.6083,
+        3.325
+      ]
+    },
+    {
+      "seq": 16,
+      "step": "validate",
+      "event": "tool_call",
+      "tool": "validate_results",
+      "args": {
+        "returned": 5
+      }
+    },
+    {
+      "seq": 17,
+      "step": "validate",
+      "event": "tool_result",
+      "tool": "validate_results",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 18,
+      "step": "validate",
+      "event": "sources_checked",
+      "cited": [
+        "KB-GOAL-WORKOUT",
+        "KB-MOD-HIGH-ENERGY",
+        "KB-FEAT-ENERGY",
+        "KB-POLICY-SYNTHETIC",
+        "KB-POLICY-INFERENCE",
+        "KB-POLICY-FILTER-BUBBLE",
+        "KB-POLICY-COVERAGE"
+      ],
+      "removed": []
+    },
+    {
+      "seq": 19,
+      "step": "final",
+      "event": "final_status",
+      "status": "ok",
+      "returned": [
+        21,
+        30,
+        19,
+        28,
+        5
+      ],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}

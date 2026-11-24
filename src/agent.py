@@ -336,8 +336,7 @@ class Agent:
 
         # 4. build the plan
         goal_source = "override" if req.goal else ("classifier" if goal == prediction.label else "retrieval")
-        plan = self._build_plan(trace, req, goal, goal_source, parsed, hits, explicit, constraints, count)
-        plan.goal_note = goal_note
+        plan = self._build_plan(trace, req, goal, goal_source, goal_note, parsed, hits, explicit, constraints, count)
         if plan.conflicts:
             return self._finish(
                 trace, req, "needs_clarification",
@@ -504,10 +503,10 @@ class Agent:
 
     # -- planning ----------------------------------------------------------------------
 
-    def _build_plan(self, trace: Trace, req: AssistantRequest, goal: Optional[str], goal_source: str,
+    def _build_plan(self, trace: Trace, req: AssistantRequest, goal: Optional[str], goal_source: str, goal_note: str,
                     parsed: ParsedRequest, hits: Sequence[Hit], explicit: Mapping[str, Tuple[Any, str]],
                     constraints: Sequence[Constraint], count: int) -> Plan:
-        plan = Plan(count=count, goal=goal, goal_source=goal_source if goal else "none",
+        plan = Plan(count=count, goal=goal, goal_source=goal_source if goal else "none", goal_note=goal_note,
                     constraints=list(constraints), not_applied=list(parsed.not_applied))
         applied: List[str] = []
         conflicts: List[Tuple[str, str]] = []          # (preference key, description)

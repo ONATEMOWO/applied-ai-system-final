@@ -1,0 +1,208 @@
+{
+  "description": "Contradictory goal and wording: the agent stops and asks instead of guessing.",
+  "command": "python3 -m src.assistant --query \"Give me calm music for an intense workout\" --trace-file traces/clarification_conflict.json",
+  "injected_fault": null,
+  "query": "Give me calm music for an intense workout",
+  "status": "needs_clarification",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "Give me calm music for an intense workout",
+      "options": {
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "workout",
+      "best_label": "workout",
+      "relative_score": 0.9827,
+      "margin": 0.9734,
+      "known_features": 4,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [
+        "intense"
+      ],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'workout' with explicit preferences"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "Give me calm music for an intense workout",
+        "goal_token": "goal_workout"
+      }
+    },
+    {
+      "seq": 9,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-FEAT-ENERGY",
+          "kind": "feature",
+          "score": 0.2894,
+          "matched": [
+            "intense"
+          ]
+        },
+        {
+          "id": "KB-MOD-CALM",
+          "kind": "modifier",
+          "score": 0.2552,
+          "matched": [
+            "calm"
+          ]
+        },
+        {
+          "id": "KB-GOAL-WORKOUT",
+          "kind": "goal",
+          "score": 0.2424,
+          "matched": [
+            "workout",
+            "goal_workout"
+          ]
+        },
+        {
+          "id": "KB-MOD-LOW-ENERGY",
+          "kind": "modifier",
+          "score": 0.0942,
+          "matched": []
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "step": "retrieve",
+      "event": "goal_resolved",
+      "model_goal": "workout",
+      "goals_with_keyword_evidence": [
+        "workout"
+      ],
+      "final_goal": "workout",
+      "changed": false
+    },
+    {
+      "seq": 11,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 5,
+      "goal": "workout",
+      "goal_source": "classifier",
+      "goal_profile_applied": true,
+      "goal_note": "",
+      "soft_preferences": {
+        "mood": {
+          "value": "intense",
+          "origin": "explicit",
+          "source": "request",
+          "overridden": [
+            "KB-GOAL-WORKOUT=energetic"
+          ]
+        },
+        "likes_acoustic": {
+          "value": false,
+          "origin": "inferred",
+          "source": "KB-GOAL-WORKOUT",
+          "overridden": []
+        },
+        "energy": {
+          "value": 0.92,
+          "origin": "inferred",
+          "source": "KB-GOAL-WORKOUT",
+          "overridden": []
+        },
+        "danceability": {
+          "value": 0.75,
+          "origin": "inferred",
+          "source": "KB-GOAL-WORKOUT",
+          "overridden": []
+        },
+        "tempo_bpm": {
+          "value": 140.0,
+          "origin": "inferred",
+          "source": "KB-GOAL-WORKOUT",
+          "overridden": []
+        }
+      },
+      "hard_constraints": [],
+      "mode": "balanced",
+      "mode_source": "KB-GOAL-WORKOUT",
+      "diversity": {
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0,
+        "source": "default"
+      },
+      "applied_sources": [
+        "KB-GOAL-WORKOUT"
+      ],
+      "adjustments": [],
+      "conflicts": [
+        "energy: KB-GOAL-WORKOUT wants 0.92 but KB-MOD-CALM wants 0.3",
+        "tempo_bpm: KB-GOAL-WORKOUT wants 140 but KB-MOD-CALM wants 75"
+      ],
+      "not_applied": []
+    },
+    {
+      "seq": 12,
+      "step": "final",
+      "event": "final_status",
+      "status": "needs_clarification",
+      "returned": [],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}

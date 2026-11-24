@@ -1,0 +1,281 @@
+{
+  "description": "Only a few songs satisfy the hard limit, so fewer than requested are returned.",
+  "command": "python3 -m src.assistant --query \"music for studying\" --count 10 --require 'energy<=0.25' --trace-file traces/insufficient_matches.json",
+  "injected_fault": null,
+  "query": "music for studying",
+  "status": "ok",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "music for studying",
+      "options": {
+        "count": 10,
+        "require": [
+          "energy <= 0.25"
+        ],
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "study",
+      "best_label": "study",
+      "relative_score": 0.9065,
+      "margin": 0.8874,
+      "known_features": 1,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'study'"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "music for studying",
+        "goal_token": "goal_study"
+      }
+    },
+    {
+      "seq": 9,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-STUDY",
+          "kind": "goal",
+          "score": 0.392,
+          "matched": [
+            "study",
+            "goal_study"
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "step": "retrieve",
+      "event": "goal_resolved",
+      "model_goal": "study",
+      "goals_with_keyword_evidence": [
+        "study"
+      ],
+      "final_goal": "study",
+      "changed": false
+    },
+    {
+      "seq": 11,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 10,
+      "goal": "study",
+      "goal_source": "classifier",
+      "goal_profile_applied": true,
+      "goal_note": "",
+      "soft_preferences": {
+        "mood": {
+          "value": "focused",
+          "origin": "inferred",
+          "source": "KB-GOAL-STUDY",
+          "overridden": []
+        },
+        "likes_acoustic": {
+          "value": true,
+          "origin": "inferred",
+          "source": "KB-GOAL-STUDY",
+          "overridden": []
+        },
+        "energy": {
+          "value": 0.25,
+          "origin": "inferred",
+          "source": "KB-GOAL-STUDY",
+          "overridden": []
+        },
+        "tempo_bpm": {
+          "value": 80.0,
+          "origin": "inferred",
+          "source": "KB-GOAL-STUDY",
+          "overridden": []
+        },
+        "instrumentalness": {
+          "value": 0.85,
+          "origin": "inferred",
+          "source": "KB-GOAL-STUDY",
+          "overridden": []
+        }
+      },
+      "hard_constraints": [
+        {
+          "rule": "energy <= 0.25",
+          "origin": "cli"
+        }
+      ],
+      "mode": "balanced",
+      "mode_source": "KB-GOAL-STUDY",
+      "diversity": {
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0,
+        "source": "default"
+      },
+      "applied_sources": [
+        "KB-GOAL-STUDY"
+      ],
+      "adjustments": [
+        "inferred energy target 0.4 (KB-GOAL-STUDY) moved to 0.25 to respect your hard limit"
+      ],
+      "conflicts": [],
+      "not_applied": []
+    },
+    {
+      "seq": 12,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "filter_catalog",
+      "args": {
+        "constraints": [
+          "energy <= 0.25"
+        ]
+      }
+    },
+    {
+      "seq": 13,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "filter_catalog",
+      "catalog": 30,
+      "candidates": 2,
+      "removed_by": [
+        {
+          "constraint": "energy <= 0.25",
+          "removed": 28
+        }
+      ]
+    },
+    {
+      "seq": 14,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "rank_songs",
+      "args": {
+        "mode": "balanced",
+        "k": 10,
+        "candidates": 2,
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0
+      }
+    },
+    {
+      "seq": 15,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "rank_songs",
+      "returned": [
+        27,
+        17
+      ],
+      "scores": [
+        3.2267,
+        3.19
+      ]
+    },
+    {
+      "seq": 16,
+      "step": "validate",
+      "event": "tool_call",
+      "tool": "validate_results",
+      "args": {
+        "returned": 2
+      }
+    },
+    {
+      "seq": 17,
+      "step": "validate",
+      "event": "tool_result",
+      "tool": "validate_results",
+      "ok": true,
+      "issues": [
+        {
+          "code": "FEWER_THAN_REQUESTED",
+          "severity": "info",
+          "detail": "only 2 of 10 requested songs satisfy the constraints"
+        }
+      ]
+    },
+    {
+      "seq": 18,
+      "step": "validate",
+      "event": "sources_checked",
+      "cited": [
+        "KB-GOAL-STUDY",
+        "KB-POLICY-SYNTHETIC",
+        "KB-POLICY-INFERENCE",
+        "KB-POLICY-FILTER-BUBBLE",
+        "KB-POLICY-COVERAGE"
+      ],
+      "removed": []
+    },
+    {
+      "seq": 19,
+      "step": "final",
+      "event": "final_status",
+      "status": "ok",
+      "returned": [
+        27,
+        17
+      ],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}

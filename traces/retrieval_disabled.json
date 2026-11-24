@@ -1,0 +1,120 @@
+{
+  "description": "Same study request with retrieval disabled: nothing explicit to score, so it clarifies.",
+  "command": "python3 -m src.assistant --query \"Find calm instrumental music for studying\" --no-retrieval --trace-file traces/retrieval_disabled.json",
+  "injected_fault": null,
+  "query": "Find calm instrumental music for studying",
+  "status": "needs_clarification",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "Find calm instrumental music for studying",
+      "options": {
+        "retrieval": false,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "study",
+      "best_label": "study",
+      "relative_score": 0.9881,
+      "margin": 0.9809,
+      "known_features": 4,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'study'"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "retrieval_disabled",
+      "note": "no knowledge is used; only explicit preferences count"
+    },
+    {
+      "seq": 9,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 5,
+      "goal": "study",
+      "goal_source": "classifier",
+      "goal_profile_applied": false,
+      "goal_note": "",
+      "soft_preferences": {},
+      "hard_constraints": [],
+      "mode": "balanced",
+      "mode_source": "default",
+      "diversity": {
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0,
+        "source": "default"
+      },
+      "applied_sources": [],
+      "adjustments": [],
+      "conflicts": [],
+      "not_applied": []
+    },
+    {
+      "seq": 10,
+      "step": "decision",
+      "event": "clarify",
+      "reason": "I found no preferences I can score against. Knowledge retrieval is disabled, so only an explicit genre, mood, decade or --prefer value can be used."
+    },
+    {
+      "seq": 11,
+      "step": "final",
+      "event": "final_status",
+      "status": "needs_clarification",
+      "returned": [],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "description": "Out-of-scope request: routed to 'unsupported' before retrieval.",
+  "command": "python3 -m src.assistant --query \"What is the weather like today\" --trace-file traces/unsupported.json",
+  "injected_fault": null,
+  "query": "What is the weather like today",
+  "status": "unsupported",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "What is the weather like today",
+      "options": {
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "unsupported",
+      "best_label": "unsupported",
+      "relative_score": 0.9914,
+      "margin": 0.9838,
+      "known_features": 4,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "unsupported",
+      "reason": "the intent model classified this as out of scope"
+    },
+    {
+      "seq": 8,
+      "step": "final",
+      "event": "final_status",
+      "status": "unsupported",
+      "returned": [],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}

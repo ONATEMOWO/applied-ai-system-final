@@ -1,0 +1,330 @@
+{
+  "description": "A hard energy cap parsed from the wording filters the catalog before ranking.",
+  "command": "python3 -m src.assistant --query \"I want something relaxing without too much energy\" --trace-file traces/relax_hard_constraint.json",
+  "injected_fault": null,
+  "query": "I want something relaxing without too much energy",
+  "status": "ok",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "I want something relaxing without too much energy",
+      "options": {
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "relax",
+      "best_label": "relax",
+      "relative_score": 0.5457,
+      "margin": 0.3234,
+      "known_features": 4,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [],
+      "decade": null,
+      "hard_constraints": [
+        "energy <= 0.60"
+      ],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'relax'"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "I want something relaxing without too much energy",
+        "goal_token": "goal_relax"
+      }
+    },
+    {
+      "seq": 9,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-RELAX",
+          "kind": "goal",
+          "score": 0.2892,
+          "matched": [
+            "relax",
+            "goal_relax"
+          ]
+        },
+        {
+          "id": "KB-MOD-LOW-ENERGY",
+          "kind": "modifier",
+          "score": 0.1572,
+          "matched": [
+            "without too much energy"
+          ]
+        },
+        {
+          "id": "KB-MOD-INSTRUMENTAL",
+          "kind": "modifier",
+          "score": 0.1085,
+          "matched": []
+        },
+        {
+          "id": "KB-GOAL-DISCOVERY",
+          "kind": "goal",
+          "score": 0.1068,
+          "matched": []
+        },
+        {
+          "id": "KB-MOD-HIGH-ENERGY",
+          "kind": "modifier",
+          "score": 0.0892,
+          "matched": []
+        },
+        {
+          "id": "KB-FEAT-GENRE-MOOD",
+          "kind": "feature",
+          "score": 0.0873,
+          "matched": []
+        },
+        {
+          "id": "KB-FEAT-INSTRUMENTALNESS",
+          "kind": "feature",
+          "score": 0.0831,
+          "matched": []
+        },
+        {
+          "id": "KB-FEAT-ENERGY",
+          "kind": "feature",
+          "score": 0.0675,
+          "matched": [
+            "energy"
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "step": "retrieve",
+      "event": "goal_resolved",
+      "model_goal": "relax",
+      "goals_with_keyword_evidence": [
+        "relax"
+      ],
+      "final_goal": "relax",
+      "changed": false
+    },
+    {
+      "seq": 11,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 5,
+      "goal": "relax",
+      "goal_source": "classifier",
+      "goal_profile_applied": true,
+      "goal_note": "",
+      "soft_preferences": {
+        "mood": {
+          "value": "relaxed",
+          "origin": "inferred",
+          "source": "KB-GOAL-RELAX",
+          "overridden": []
+        },
+        "likes_acoustic": {
+          "value": true,
+          "origin": "inferred",
+          "source": "KB-GOAL-RELAX",
+          "overridden": []
+        },
+        "energy": {
+          "value": 0.3,
+          "origin": "inferred",
+          "source": "KB-GOAL-RELAX",
+          "overridden": []
+        },
+        "valence": {
+          "value": 0.6,
+          "origin": "inferred",
+          "source": "KB-GOAL-RELAX",
+          "overridden": []
+        },
+        "tempo_bpm": {
+          "value": 75.0,
+          "origin": "inferred",
+          "source": "KB-GOAL-RELAX",
+          "overridden": []
+        }
+      },
+      "hard_constraints": [
+        {
+          "rule": "energy <= 0.60",
+          "origin": "request"
+        }
+      ],
+      "mode": "balanced",
+      "mode_source": "KB-GOAL-RELAX",
+      "diversity": {
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0,
+        "source": "default"
+      },
+      "applied_sources": [
+        "KB-GOAL-RELAX",
+        "KB-MOD-LOW-ENERGY"
+      ],
+      "adjustments": [],
+      "conflicts": [],
+      "not_applied": []
+    },
+    {
+      "seq": 12,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "filter_catalog",
+      "args": {
+        "constraints": [
+          "energy <= 0.60"
+        ]
+      }
+    },
+    {
+      "seq": 13,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "filter_catalog",
+      "catalog": 30,
+      "candidates": 15,
+      "removed_by": [
+        {
+          "constraint": "energy <= 0.60",
+          "removed": 15
+        }
+      ]
+    },
+    {
+      "seq": 14,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "rank_songs",
+      "args": {
+        "mode": "balanced",
+        "k": 5,
+        "candidates": 15,
+        "artist_penalty": 0.0,
+        "genre_penalty": 0.0
+      }
+    },
+    {
+      "seq": 15,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "rank_songs",
+      "returned": [
+        20,
+        27,
+        7,
+        22,
+        29
+      ],
+      "scores": [
+        4.8167,
+        4.6783,
+        4.625,
+        4.35,
+        3.3217
+      ]
+    },
+    {
+      "seq": 16,
+      "step": "validate",
+      "event": "tool_call",
+      "tool": "validate_results",
+      "args": {
+        "returned": 5
+      }
+    },
+    {
+      "seq": 17,
+      "step": "validate",
+      "event": "tool_result",
+      "tool": "validate_results",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 18,
+      "step": "validate",
+      "event": "sources_checked",
+      "cited": [
+        "KB-GOAL-RELAX",
+        "KB-MOD-LOW-ENERGY",
+        "KB-FEAT-GENRE-MOOD",
+        "KB-FEAT-ENERGY",
+        "KB-POLICY-SYNTHETIC",
+        "KB-POLICY-INFERENCE",
+        "KB-POLICY-FILTER-BUBBLE",
+        "KB-POLICY-COVERAGE"
+      ],
+      "removed": []
+    },
+    {
+      "seq": 19,
+      "step": "final",
+      "event": "final_status",
+      "status": "ok",
+      "returned": [
+        20,
+        27,
+        7,
+        22,
+        29
+      ],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}

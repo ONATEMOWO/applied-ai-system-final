@@ -1,0 +1,392 @@
+{
+  "description": "The intent model says 'discovery'; the word 'party' corrects the goal; retrieval selects artist variety.",
+  "command": "python3 -m src.assistant --query \"Recommend upbeat party music with different artists\" --trace-file traces/party_goal_correction.json",
+  "injected_fault": null,
+  "query": "Recommend upbeat party music with different artists",
+  "status": "ok",
+  "events": [
+    {
+      "seq": 1,
+      "step": "input",
+      "event": "request_received",
+      "query": "Recommend upbeat party music with different artists",
+      "options": {
+        "retrieval": true,
+        "guardrails": true
+      }
+    },
+    {
+      "seq": 2,
+      "step": "input",
+      "event": "input_validated",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 3,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "classify_intent",
+      "args": {
+        "override": null
+      }
+    },
+    {
+      "seq": 4,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "classify_intent",
+      "label": "discovery",
+      "best_label": "discovery",
+      "relative_score": 0.8484,
+      "margin": 0.6983,
+      "known_features": 5,
+      "source": "classifier",
+      "reason": ""
+    },
+    {
+      "seq": 5,
+      "step": "interpret",
+      "event": "tool_call",
+      "tool": "parse_explicit_request",
+      "args": {}
+    },
+    {
+      "seq": 6,
+      "step": "interpret",
+      "event": "tool_result",
+      "tool": "parse_explicit_request",
+      "count": null,
+      "genres": [],
+      "moods": [],
+      "decade": null,
+      "hard_constraints": [],
+      "not_applied": [],
+      "contradictions": [],
+      "invalid": []
+    },
+    {
+      "seq": 7,
+      "step": "decision",
+      "event": "route",
+      "route": "recommend",
+      "reason": "intent 'discovery'"
+    },
+    {
+      "seq": 8,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "Recommend upbeat party music with different artists",
+        "goal_token": "goal_discovery"
+      }
+    },
+    {
+      "seq": 9,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-PARTY",
+          "kind": "goal",
+          "score": 0.2955,
+          "matched": [
+            "party"
+          ]
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-ARTIST",
+          "kind": "strategy",
+          "score": 0.2233,
+          "matched": [
+            "different artists"
+          ]
+        },
+        {
+          "id": "KB-MOD-UPBEAT",
+          "kind": "modifier",
+          "score": 0.1994,
+          "matched": [
+            "upbeat"
+          ]
+        },
+        {
+          "id": "KB-POLICY-SYNTHETIC",
+          "kind": "policy",
+          "score": 0.1677,
+          "matched": []
+        },
+        {
+          "id": "KB-GOAL-DISCOVERY",
+          "kind": "goal",
+          "score": 0.1581,
+          "matched": [
+            "goal_discovery"
+          ]
+        },
+        {
+          "id": "KB-POLICY-FILTER-BUBBLE",
+          "kind": "policy",
+          "score": 0.1426,
+          "matched": []
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-GENRE",
+          "kind": "strategy",
+          "score": 0.1008,
+          "matched": []
+        },
+        {
+          "id": "KB-STRAT-VARIETY",
+          "kind": "strategy",
+          "score": 0.0632,
+          "matched": []
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "step": "retrieve",
+      "event": "tool_call",
+      "tool": "retrieve_knowledge",
+      "args": {
+        "query": "Recommend upbeat party music with different artists",
+        "goal_token": "goal_party",
+        "repeat": true
+      }
+    },
+    {
+      "seq": 11,
+      "step": "retrieve",
+      "event": "tool_result",
+      "tool": "retrieve_knowledge",
+      "hits": [
+        {
+          "id": "KB-GOAL-PARTY",
+          "kind": "goal",
+          "score": 0.3761,
+          "matched": [
+            "party",
+            "goal_party"
+          ]
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-ARTIST",
+          "kind": "strategy",
+          "score": 0.2233,
+          "matched": [
+            "different artists"
+          ]
+        },
+        {
+          "id": "KB-MOD-UPBEAT",
+          "kind": "modifier",
+          "score": 0.1994,
+          "matched": [
+            "upbeat"
+          ]
+        },
+        {
+          "id": "KB-POLICY-SYNTHETIC",
+          "kind": "policy",
+          "score": 0.1677,
+          "matched": []
+        },
+        {
+          "id": "KB-POLICY-FILTER-BUBBLE",
+          "kind": "policy",
+          "score": 0.1426,
+          "matched": []
+        },
+        {
+          "id": "KB-STRAT-DIVERSITY-GENRE",
+          "kind": "strategy",
+          "score": 0.1008,
+          "matched": []
+        },
+        {
+          "id": "KB-GOAL-DISCOVERY",
+          "kind": "goal",
+          "score": 0.0816,
+          "matched": []
+        },
+        {
+          "id": "KB-STRAT-VARIETY",
+          "kind": "strategy",
+          "score": 0.0632,
+          "matched": []
+        }
+      ]
+    },
+    {
+      "seq": 12,
+      "step": "retrieve",
+      "event": "goal_resolved",
+      "model_goal": "discovery",
+      "goals_with_keyword_evidence": [
+        "party"
+      ],
+      "final_goal": "party",
+      "changed": true
+    },
+    {
+      "seq": 13,
+      "step": "plan",
+      "event": "plan_built",
+      "count": 5,
+      "goal": "party",
+      "goal_source": "retrieval",
+      "goal_profile_applied": true,
+      "goal_note": "the intent model said 'discovery' (relative score 0.85), but the request contains the party word(s) 'party', so 'party' was used",
+      "soft_preferences": {
+        "mood": {
+          "value": "happy",
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "likes_acoustic": {
+          "value": false,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "energy": {
+          "value": 0.8,
+          "origin": "inferred",
+          "source": "KB-MOD-UPBEAT",
+          "overridden": [
+            "KB-GOAL-PARTY=0.85"
+          ]
+        },
+        "valence": {
+          "value": 0.85,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        },
+        "danceability": {
+          "value": 0.88,
+          "origin": "inferred",
+          "source": "KB-GOAL-PARTY",
+          "overridden": []
+        }
+      },
+      "hard_constraints": [],
+      "mode": "balanced",
+      "mode_source": "KB-GOAL-PARTY",
+      "diversity": {
+        "artist_penalty": 0.75,
+        "genre_penalty": 0.0,
+        "source": "KB-STRAT-DIVERSITY-ARTIST"
+      },
+      "applied_sources": [
+        "KB-GOAL-PARTY",
+        "KB-MOD-UPBEAT",
+        "KB-STRAT-DIVERSITY-ARTIST"
+      ],
+      "adjustments": [],
+      "conflicts": [],
+      "not_applied": []
+    },
+    {
+      "seq": 14,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "filter_catalog",
+      "args": {
+        "constraints": []
+      }
+    },
+    {
+      "seq": 15,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "filter_catalog",
+      "catalog": 30,
+      "candidates": 30,
+      "removed_by": []
+    },
+    {
+      "seq": 16,
+      "step": "recommend",
+      "event": "tool_call",
+      "tool": "rank_songs",
+      "args": {
+        "mode": "balanced",
+        "k": 5,
+        "candidates": 30,
+        "artist_penalty": 0.75,
+        "genre_penalty": 0.0
+      }
+    },
+    {
+      "seq": 17,
+      "step": "recommend",
+      "event": "tool_result",
+      "tool": "rank_songs",
+      "returned": [
+        24,
+        11,
+        1,
+        10,
+        21
+      ],
+      "scores": [
+        4.89,
+        4.85,
+        4.82,
+        4.695,
+        3.205
+      ]
+    },
+    {
+      "seq": 18,
+      "step": "validate",
+      "event": "tool_call",
+      "tool": "validate_results",
+      "args": {
+        "returned": 5
+      }
+    },
+    {
+      "seq": 19,
+      "step": "validate",
+      "event": "tool_result",
+      "tool": "validate_results",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "seq": 20,
+      "step": "validate",
+      "event": "sources_checked",
+      "cited": [
+        "KB-GOAL-PARTY",
+        "KB-MOD-UPBEAT",
+        "KB-STRAT-DIVERSITY-ARTIST",
+        "KB-POLICY-SYNTHETIC",
+        "KB-POLICY-INFERENCE",
+        "KB-POLICY-COVERAGE"
+      ],
+      "removed": []
+    },
+    {
+      "seq": 21,
+      "step": "final",
+      "event": "final_status",
+      "status": "ok",
+      "returned": [
+        24,
+        11,
+        1,
+        10,
+        21
+      ],
+      "warnings": [],
+      "corrections": 0
+    }
+  ]
+}
