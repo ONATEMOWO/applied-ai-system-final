@@ -1,7 +1,6 @@
 """Tests for the intent classifier, the keyword baseline, the datasets and the request parser."""
 
 import math
-from pathlib import Path
 
 import pytest
 
@@ -42,7 +41,7 @@ def heldout():
 def test_splits_have_the_documented_shape(train, dev, heldout):
     assert (len(train), len(dev), len(heldout)) == (144, 34, 66)
     assert {label for _, label in train} == set(TRAIN_LABELS)
-    assert all(sum(1 for _, l in train if l == label) == 24 for label in TRAIN_LABELS)
+    assert all(sum(1 for _, other in train if other == label) == 24 for label in TRAIN_LABELS)
     assert {label for _, label in heldout} == set(EVAL_LABELS)
     assert UNCERTAIN not in {label for _, label in train}     # abstention is never a trained class
 

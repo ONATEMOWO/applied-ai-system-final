@@ -158,7 +158,9 @@ def format_response(result: AgentResult, width: int = DEFAULT_WIDTH, layout: str
     else:
         out.append("Validation: SKIPPED (guardrails disabled)")
     if result.cited_sources:
-        out.append(_wrap("Sources: " + ", ".join(result.cited_sources), width, "", "         "))
+        scores = {h.section.id: h.score for h in result.hits}
+        cited = [f"{sid} ({scores[sid]:.2f})" if sid in scores else f"{sid} (fixed note)" for sid in result.cited_sources]
+        out.append(_wrap("Sources (retrieval score): " + ", ".join(cited), width, "", "                           "))
     return _fit("\n".join(out), width)
 
 
@@ -195,9 +197,13 @@ def compare_retrieval(request: AssistantRequest) -> Tuple[AgentResult, AgentResu
     from dataclasses import replace
     with_kb = build_agent().run(replace(request, use_retrieval=True))
     without = build_agent().run(replace(request, use_retrieval=False))
-    ids = lambda r: [rec.song["id"] for rec in r.recommendations]
+    def ids(r: AgentResult) -> List[int]:
+        return [rec.song["id"] for rec in r.recommendations]
+
     a, b = ids(with_kb), ids(without)
-    prefs = lambda r: {} if r.plan is None else r.plan.prefs
+    def prefs(r: AgentResult) -> Dict[str, Any]:
+        return {} if r.plan is None else r.plan.prefs
+
     diff = {
         "with_status": with_kb.status, "without_status": without.status,
         "with_ids": a, "without_ids": b,

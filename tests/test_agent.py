@@ -8,7 +8,7 @@ import pytest
 import src.agent as agent_module
 from src.agent import MAX_CORRECTIONS, Agent, AssistantRequest
 from src.assistant import build_agent, compare_retrieval, run_assistant
-from src.intent import Constraint, parse_require
+from src.intent import parse_require
 from src.recommender import RANKING_MODES, rank_songs
 
 AGENT = build_agent()
@@ -97,7 +97,9 @@ def test_retrieval_changes_the_ranking_when_the_user_only_names_a_genre():
     assert set(without.plan.prefs) == {"genre"} and "energy" in with_kb.plan.prefs
     assert diff["first_rank_that_differs"] is not None
     assert [r.song["id"] for r in with_kb.recommendations] != [r.song["id"] for r in without.recommendations]
-    mean = lambda r: sum(x.song["energy"] for x in r.recommendations) / len(r.recommendations)
+    def mean(r):
+        return sum(x.song["energy"] for x in r.recommendations) / len(r.recommendations)
+
     assert mean(with_kb) > mean(without)
 
 
@@ -335,7 +337,9 @@ def test_a_missed_variety_request_triggers_one_stronger_rerank_that_works():
 
 
 def test_when_stronger_variety_still_fails_it_is_reported_as_a_warning_and_the_run_still_ends():
-    ignore_variety = lambda prefs, songs, k, weights=None, diversity=None: rank_songs(prefs, songs, k, weights, None)
+    def ignore_variety(prefs, songs, k, weights=None, diversity=None):
+        return rank_songs(prefs, songs, k, weights, None)
+
     result = Agent(AGENT.songs, AGENT.kb, recommend_fn=ignore_variety).run(
         AssistantRequest("pop party music with different artists", count=6))
     assert result.status == "ok" and len(result.corrections) == 1

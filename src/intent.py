@@ -112,7 +112,7 @@ class Prediction:
 
 
 class NaiveBayesIntentClassifier:
-    """Multinomial Naive Bayes over stemmed words (optionally also word pairs), Laplace smoothing."""
+    """Multinomial Naive Bayes over stemmed words (optionally also word pairs) with additive (Lidstone) smoothing."""
 
     def __init__(self, alpha: float = DEFAULT_ALPHA, min_score: float = DEFAULT_MIN_SCORE,
                  bigrams: bool = DEFAULT_BIGRAMS):

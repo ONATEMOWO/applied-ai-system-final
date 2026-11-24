@@ -38,7 +38,8 @@ def test_a_normal_request_prints_a_grounded_response(capsys):
     assert code == 0
     for expected in ("Status  : ok", "Goal    : study", "Plan (what the ranking engine was asked to do)",
                      "Soft inferred preferences", "KB-GOAL-STUDY", "Focus Flow", "Why this plan",
-                     "project-authored guidance", "Validation: passed", "Sources:"):
+                     "project-authored guidance", "Validation: passed", "Sources (retrieval score):", "KB-GOAL-STUDY (0.29)",
+                     "KB-POLICY-SYNTHETIC (fixed note)"):
         assert expected in out
 
 
@@ -77,6 +78,8 @@ def test_json_output_is_the_whole_result_and_only_json(capsys):
     data = json.loads(out)                          # would raise if text were mixed in
     assert data["status"] == "ok" and data["events"][-1]["event"] == "final_status"
     assert data["cited_sources"] and data["intent"]["label"] == "study"
+    assert data["retrieved"][0] == {"id": "KB-GOAL-STUDY", "kind": "goal", "score": 0.2916, "matched": ["study", "goal_study"]}
+    assert [h["score"] for h in data["retrieved"]] == sorted((h["score"] for h in data["retrieved"]), reverse=True)
 
 
 def test_trace_is_printed_on_request(capsys):

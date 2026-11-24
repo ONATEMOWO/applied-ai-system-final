@@ -12,7 +12,7 @@ from src.guardrails import (
 from src.intent import Constraint, catalog_vocabulary
 from src.main import PROFILES, SONGS_CSV
 from src.recommender import (
-    DiversityConfig, Recommendation, RANKING_MODES, ScoringWeights, load_songs, rank_songs,
+    DiversityConfig, RANKING_MODES, ScoringWeights, load_songs, rank_songs,
 )
 
 SONGS = load_songs(str(SONGS_CSV))

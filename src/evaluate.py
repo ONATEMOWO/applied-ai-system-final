@@ -23,12 +23,11 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
-import src.agent as agent_module
 from src.agent import Agent, AgentResult, AssistantRequest
 from src.assistant import build_agent, compare_retrieval
 from src.intent import (
     DEFAULT_ALPHA, DEFAULT_BIGRAMS, DEFAULT_MIN_SCORE, DEV_FILE, EVAL_LABELS, HELDOUT_FILE, TRAIN_FILE,
-    TRAIN_LABELS, UNCERTAIN, UNSUPPORTED, compare_models, default_classifier, load_intent_examples,
+    TRAIN_LABELS, UNCERTAIN, UNSUPPORTED, compare_models, load_intent_examples,
     overlapping_examples, parse_require, summarize_comparison, tune_on_dev,
 )
 from src.recommender import Recommendation, rank_songs, score_breakdown
@@ -464,8 +463,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     held = load_intent_examples(HELDOUT_FILE)
     integrity = [
         ("no sentence appears in more than one split", overlapping_examples(train, dev, held) == []),
-        ("training labels are the six trained labels only", {l for _, l in train} == set(TRAIN_LABELS)),
-        ("held-out file covers all seven evaluation labels", {l for _, l in held} == set(EVAL_LABELS)),
+        ("training labels are the six trained labels only", {label for _, label in train} == set(TRAIN_LABELS)),
+        ("held-out file covers all seven evaluation labels", {label for _, label in held} == set(EVAL_LABELS)),
     ]
     for name, ok in integrity:
         print(f"[{'PASS' if ok else 'FAIL'}] dataset integrity: {name}")
@@ -512,11 +511,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     goal_rows = [(p, r) for p, r in zip(pipeline, comparison) if r.expected in ("study", "workout", "party", "relax", "discovery")]
     wrong_model = sum(1 for r in comparison if r.specialized not in (r.expected, UNCERTAIN))
     wrong_pipe = sum(1 for p, r in zip(pipeline, comparison) if p not in (r.expected, UNCERTAIN))
-    print(f"\npipeline goal decision with retrieval evidence rules (POST-HOC, not an independent measurement):")
+    print("\npipeline goal decision with retrieval evidence rules (POST-HOC, not an independent measurement):")
     print(f"  correct {pipe_ok}/{len(comparison)} ({pipe_ok / len(comparison):.1%}) vs Naive Bayes alone "
           f"{summary['overall']['specialized_correct']}/{len(comparison)}")
     print(f"  confident wrong answers (neither correct nor an abstention): {wrong_pipe} in the pipeline vs {wrong_model} for the model alone")
     print(f"  five goals only: {sum(p == r.expected for p, r in goal_rows)}/{len(goal_rows)}")
+
+    print("\ncoverage vs precision (an 'answer' is any label other than 'uncertain'):")
+    for name, labels in (("keyword baseline", [r.baseline for r in comparison]),
+                         ("Naive Bayes", [r.specialized for r in comparison]),
+                         ("pipeline (post-hoc)", pipeline)):
+        answered = [(label, r.expected) for label, r in zip(labels, comparison) if label != UNCERTAIN]
+        right = sum(label == expected for label, expected in answered)
+        precision = f"{right / len(answered):.1%}" if answered else "n/a"
+        print(f"  {name:<20} answered {len(answered):>2}/{len(comparison)}, correct when answered {right:>2} ({precision})")
 
     # --- 3 -------------------------------------------------------------------------------------
     print(_rule("3. RETRIEVAL ENABLED vs DISABLED (same input, same catalog)"))

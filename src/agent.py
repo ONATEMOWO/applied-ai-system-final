@@ -184,6 +184,8 @@ class AgentResult:
                                  "artist": r.song["artist"], "score": round(r.score, 4), "reasons": list(r.reasons)}
                                 for i, r in enumerate(self.recommendations, start=1)],
             "candidates": self.candidates, "catalog_size": self.catalog_size, "perfect_score": self.perfect_score,
+            "retrieved": [{"id": h.section.id, "kind": h.section.kind, "score": h.score, "matched": list(h.matched)}
+                          for h in self.hits],
             "warnings": [i.to_dict() for i in self.warnings], "failures": [i.to_dict() for i in self.failures],
             "corrections": self.corrections, "cited_sources": self.cited_sources, "notes": self.notes,
             "retrieval_used": self.retrieval_used, "guardrails_used": self.guardrails_used,
