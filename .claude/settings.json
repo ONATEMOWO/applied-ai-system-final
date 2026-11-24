@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -)",
+      "Bash(python3 -m pytest tests/test_retrieval.py -q)",
+      "Bash(sed -i '' 's/word\\\\[-2\\\\] not in \"su\"/word[-2] not in \"sui\"/' src/textutil.py)",
+      "Bash(sed -i '' 's/different music by many artists/different music by several artists/' tests/test_retrieval.py)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
