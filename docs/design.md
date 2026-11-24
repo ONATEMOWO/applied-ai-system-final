@@ -24,9 +24,9 @@ checks that stop bad output from reaching them.
 
 ```
 request -> input validation -> intent model + explicit-request parser
-        -> knowledge retrieval -> recommendation plan
+        -> knowledge retrieval -> goal resolution -> recommendation plan
         -> hard-constraint filter -> existing ranking engine
-        -> result validation -> (one bounded correction | clarification | failure)
+        -> result validation -> (up to two bounded corrections | clarification | failure)
         -> grounded response (+ runtime trace)
 ```
 
@@ -58,3 +58,12 @@ request -> input validation -> intent model + explicit-request parser
 
 Real streaming data, user accounts or persistent profiles, audio analysis, a GUI,
 cloud deployment, and any network access.
+
+## Changes made after this plan
+
+Recorded here so the plan is not mistaken for the final system:
+
+* **Goal evidence rule (added after testing).** The first design applied whatever goal the intent model returned. One of the three headline requests was misclassified and the held-out run showed confident wrong answers, so a goal profile now needs a matching keyword in the request, and a literal goal word can correct the model (the `goal_resolved` step). It costs coverage; see the model card. It was designed after seeing held-out failures, so its effect is labelled post-hoc.
+* **Two corrective steps, not one.** The agent allows `rerank_with_reference_engine` and `strengthen_variety`, each at most once.
+* **Dev-tuned settings.** Naive Bayes smoothing and the abstention threshold were chosen on a dev split, not guessed.
+* **Reproducibility checks.** README outputs, saved logs, traces and trace commands are re-verified by tests.

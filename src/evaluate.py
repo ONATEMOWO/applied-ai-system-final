@@ -446,7 +446,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     print(_rule("1. SCENARIO CASES (real system, predefined expectations)"))
     rows = run_cases(build_cases())
     for case, result, problem in rows:
-        shown = case.query if isinstance(case.query, str) and len(case.query) < 90 else repr(case.query)[:80] + "..."
+        shown = case.query if isinstance(case.query, str) and 0 < len(case.query) < 90 else repr(case.query)[:80] + "..."
         print(f"[{'PASS' if problem is None else 'FAIL'}] {case.id}  ({case.category})")
         print(f"       input   : {shown}")
         if case.options:

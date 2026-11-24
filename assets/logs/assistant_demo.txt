@@ -1,0 +1,217 @@
+VibeFinder AI
+=============
+Request : Find calm instrumental music for studying
+Status  : ok
+Goal    : study (intent model; relative score 0.99, not a calibrated probability)
+
+Plan (what the ranking engine was asked to do)
+  Soft inferred preferences (scoring targets, never filters):
+    mood = focused   [inferred: KB-GOAL-STUDY]
+    likes_acoustic = yes   [inferred: KB-GOAL-STUDY]
+    energy = 0.3   [inferred: KB-MOD-CALM; replaces KB-GOAL-STUDY=0.4]
+    tempo_bpm = 75   [inferred: KB-MOD-CALM; replaces KB-GOAL-STUDY=80]
+    instrumentalness = 0.85   [inferred: KB-GOAL-STUDY]
+  Hard constraints: none
+  Ranking mode: balanced (from KB-GOAL-STUDY)
+  Variety penalty: off
+  Candidates: 30 of 30 songs passed the hard constraints
+
+Top 5; a perfect match would score 5.00:
+# | Song                  | Artist           | Score | Why (points)
+--+-----------------------+------------------+-------+----------------------------------------------
+1 | Focus Flow            | LoRoom           |  4.63 | mood match: focused (+1.50)
+  |                       |                  |       | energy 0.40 vs target 0.30 (+1.80)
+  |                       |                  |       | tempo 80 vs target 75 (+0.46)
+  |                       |                  |       | instrumentalness 0.88 vs target 0.85 (+0.48)
+  |                       |                  |       | acousticness 0.78, wants acoustic (+0.39)
+--+-----------------------+------------------+-------+----------------------------------------------
+2 | Library Rain          | Paper Lanterns   |  3.30 | energy 0.35 vs target 0.30 (+1.90)
+  |                       |                  |       | tempo 72 vs target 75 (+0.47)
+  |                       |                  |       | instrumentalness 0.85 vs target 0.85 (+0.50)
+  |                       |                  |       | acousticness 0.86, wants acoustic (+0.43)
+--+-----------------------+------------------+-------+----------------------------------------------
+3 | Sunday Slow Dance     | Slow Stereo      |  3.29 | energy 0.34 vs target 0.30 (+1.92)
+  |                       |                  |       | tempo 76 vs target 75 (+0.49)
+  |                       |                  |       | instrumentalness 0.70 vs target 0.85 (+0.42)
+  |                       |                  |       | acousticness 0.90, wants acoustic (+0.45)
+--+-----------------------+------------------+-------+----------------------------------------------
+4 | Spacewalk Thoughts    | Orbit Bloom      |  3.26 | energy 0.28 vs target 0.30 (+1.96)
+  |                       |                  |       | tempo 60 vs target 75 (+0.38)
+  |                       |                  |       | instrumentalness 0.92 vs target 0.85 (+0.46)
+  |                       |                  |       | acousticness 0.92, wants acoustic (+0.46)
+--+-----------------------+------------------+-------+----------------------------------------------
+5 | Glass Cathedral       | Aria Voss        |  3.17 | energy 0.22 vs target 0.30 (+1.84)
+  |                       |                  |       | tempo 64 vs target 75 (+0.41)
+  |                       |                  |       | instrumentalness 0.97 vs target 0.85 (+0.44)
+  |                       |                  |       | acousticness 0.96, wants acoustic (+0.48)
+--+-----------------------+------------------+-------+----------------------------------------------
+
+Why this plan (project-authored guidance, not external research)
+  [KB-GOAL-STUDY] Study sessions usually favour steady, low-distraction, mostly instrumental music
+      at moderate-to-low energy.
+  [KB-MOD-CALM] "Calm" is read as low energy (0.30) and a slow tempo (about 75 BPM).
+  [KB-MOD-INSTRUMENTAL] "Instrumental" is read as a high instrumentalness target (0.85).
+  [KB-FEAT-INSTRUMENTALNESS] Instrumentalness (0 to 1) estimates how little singing a song has.
+  [KB-FEAT-ENERGY] Energy (0 to 1) is the strongest numeric signal in scoring.
+  [KB-POLICY-SYNTHETIC] The catalog is 30 fictional songs; results are not real streaming
+      recommendations.
+  [KB-POLICY-INFERENCE] Inferred targets are assumptions; explicit wording overrides them and
+      unclear requests get a clarification.
+  [KB-POLICY-FILTER-BUBBLE] Results favour the closest matches, which can repeat artists and genres;
+      the variety rerank is the counterweight.
+  [KB-POLICY-COVERAGE] The catalog is small and uneven; the assistant returns fewer songs rather
+      than relaxing a hard constraint.
+
+Validation: passed (scores and explanations re-derived, hard constraints, duplicates and sources
+            checked)
+Sources (retrieval score): KB-GOAL-STUDY (0.29), KB-MOD-CALM (0.26), KB-MOD-INSTRUMENTAL (0.20),
+                           KB-FEAT-INSTRUMENTALNESS (0.17), KB-FEAT-ENERGY (0.11),
+                           KB-POLICY-SYNTHETIC (fixed note), KB-POLICY-INFERENCE (fixed note),
+                           KB-POLICY-FILTER-BUBBLE (fixed note), KB-POLICY-COVERAGE (fixed note)
+
+--------------------------------------------------------------------------------
+
+VibeFinder AI
+=============
+Request : Give me energetic music for a workout
+Status  : ok
+Goal    : workout (intent model; relative score 0.93, not a calibrated probability)
+
+Plan (what the ranking engine was asked to do)
+  Soft explicit preferences (scoring targets, never filters):
+    mood = energetic   [explicit: your request]
+  Soft inferred preferences (scoring targets, never filters):
+    likes_acoustic = no   [inferred: KB-GOAL-WORKOUT]
+    energy = 0.9   [inferred: KB-MOD-HIGH-ENERGY; replaces KB-GOAL-WORKOUT=0.92]
+    danceability = 0.75   [inferred: KB-GOAL-WORKOUT]
+    tempo_bpm = 135   [inferred: KB-MOD-HIGH-ENERGY; replaces KB-GOAL-WORKOUT=140]
+  Hard constraints: none
+  Ranking mode: balanced (from KB-GOAL-WORKOUT)
+  Variety penalty: off
+  Candidates: 30 of 30 songs passed the hard constraints
+
+Top 5; a perfect match would score 5.00:
+# | Song                  | Artist           | Score | Why (points)
+--+-----------------------+------------------+-------+----------------------------------------------
+1 | Laser Garden          | Pulse Arcade     |  4.84 | mood match: energetic (+1.50)
+  |                       |                  |       | energy 0.90 vs target 0.90 (+2.00)
+  |                       |                  |       | danceability 0.90 vs target 0.75 (+0.42)
+  |                       |                  |       | tempo 128 vs target 135 (+0.44)
+  |                       |                  |       | acousticness 0.06, wants non-acoustic (+0.47)
+--+-----------------------+------------------+-------+----------------------------------------------
+2 | Hyperdrive Heartbeat  | Max Pulse        |  4.76 | mood match: energetic (+1.50)
+  |                       |                  |       | energy 0.95 vs target 0.90 (+1.90)
+  |                       |                  |       | danceability 0.90 vs target 0.75 (+0.42)
+  |                       |                  |       | tempo 140 vs target 135 (+0.46)
+  |                       |                  |       | acousticness 0.04, wants non-acoustic (+0.48)
+--+-----------------------+------------------+-------+----------------------------------------------
+3 | Rust Belt Anthem      | The Gravel Roads |  4.70 | mood match: energetic (+1.50)
+  |                       |                  |       | energy 0.84 vs target 0.90 (+1.88)
+  |                       |                  |       | danceability 0.58 vs target 0.75 (+0.41)
+  |                       |                  |       | tempo 138 vs target 135 (+0.47)
+  |                       |                  |       | acousticness 0.15, wants non-acoustic (+0.42)
+--+-----------------------+------------------+-------+----------------------------------------------
+4 | Neon Rain Drive       | Neon Echo        |  4.61 | mood match: energetic (+1.50)
+  |                       |                  |       | energy 0.82 vs target 0.90 (+1.84)
+  |                       |                  |       | danceability 0.78 vs target 0.75 (+0.48)
+  |                       |                  |       | tempo 118 vs target 135 (+0.36)
+  |                       |                  |       | acousticness 0.15, wants non-acoustic (+0.42)
+--+-----------------------+------------------+-------+----------------------------------------------
+5 | Gym Hero              | Max Pulse        |  3.32 | energy 0.93 vs target 0.90 (+1.94)
+  |                       |                  |       | danceability 0.88 vs target 0.75 (+0.43)
+  |                       |                  |       | tempo 132 vs target 135 (+0.47)
+  |                       |                  |       | acousticness 0.05, wants non-acoustic (+0.47)
+--+-----------------------+------------------+-------+----------------------------------------------
+
+Why this plan (project-authored guidance, not external research)
+  [KB-GOAL-WORKOUT] Workouts usually favour very high energy, a fast driving tempo and a strong
+      beat, with little acoustic texture.
+  [KB-MOD-HIGH-ENERGY] High-energy wording is read as energy 0.90 and a fast tempo (about 135 BPM).
+  [KB-FEAT-ENERGY] Energy (0 to 1) is the strongest numeric signal in scoring.
+  [KB-POLICY-SYNTHETIC] The catalog is 30 fictional songs; results are not real streaming
+      recommendations.
+  [KB-POLICY-INFERENCE] Inferred targets are assumptions; explicit wording overrides them and
+      unclear requests get a clarification.
+  [KB-POLICY-FILTER-BUBBLE] Results favour the closest matches, which can repeat artists and genres;
+      the variety rerank is the counterweight.
+  [KB-POLICY-COVERAGE] The catalog is small and uneven; the assistant returns fewer songs rather
+      than relaxing a hard constraint.
+
+Validation: passed (scores and explanations re-derived, hard constraints, duplicates and sources
+            checked)
+Sources (retrieval score): KB-GOAL-WORKOUT (0.28), KB-MOD-HIGH-ENERGY (0.12), KB-FEAT-ENERGY (0.11),
+                           KB-POLICY-SYNTHETIC (fixed note), KB-POLICY-INFERENCE (fixed note),
+                           KB-POLICY-FILTER-BUBBLE (fixed note), KB-POLICY-COVERAGE (fixed note)
+
+--------------------------------------------------------------------------------
+
+VibeFinder AI
+=============
+Request : Recommend upbeat party music with different artists
+Status  : ok
+Goal    : party (the intent model said 'discovery' (relative score 0.85), but the request contains
+          the party word(s) 'party', so 'party' was used)
+
+Plan (what the ranking engine was asked to do)
+  Soft inferred preferences (scoring targets, never filters):
+    mood = happy   [inferred: KB-GOAL-PARTY]
+    likes_acoustic = no   [inferred: KB-GOAL-PARTY]
+    energy = 0.8   [inferred: KB-MOD-UPBEAT; replaces KB-GOAL-PARTY=0.85]
+    valence = 0.85   [inferred: KB-GOAL-PARTY]
+    danceability = 0.88   [inferred: KB-GOAL-PARTY]
+  Hard constraints: none
+  Ranking mode: balanced (from KB-GOAL-PARTY)
+  Variety penalty: artist 0.75, genre 0 (from KB-STRAT-DIVERSITY-ARTIST)
+  Candidates: 30 of 30 songs passed the hard constraints
+
+Top 5; a perfect match would score 5.00:
+# | Song                  | Artist           | Score | Why (points)
+--+-----------------------+------------------+-------+----------------------------------------------
+1 | Fuego en la Calle     | Luna Rivera      |  4.89 | mood match: happy (+1.50)
+  |                       |                  |       | energy 0.80 vs target 0.80 (+2.00)
+  |                       |                  |       | valence 0.86 vs target 0.85 (+0.49)
+  |                       |                  |       | danceability 0.89 vs target 0.88 (+0.49)
+  |                       |                  |       | acousticness 0.20, wants non-acoustic (+0.40)
+--+-----------------------+------------------+-------+----------------------------------------------
+2 | Golden Hour Parade    | Cherry Meridian  |  4.85 | mood match: happy (+1.50)
+  |                       |                  |       | energy 0.78 vs target 0.80 (+1.96)
+  |                       |                  |       | valence 0.88 vs target 0.85 (+0.48)
+  |                       |                  |       | danceability 0.84 vs target 0.88 (+0.48)
+  |                       |                  |       | acousticness 0.15, wants non-acoustic (+0.42)
+--+-----------------------+------------------+-------+----------------------------------------------
+3 | Sunrise City          | Neon Echo        |  4.82 | mood match: happy (+1.50)
+  |                       |                  |       | energy 0.82 vs target 0.80 (+1.96)
+  |                       |                  |       | valence 0.84 vs target 0.85 (+0.49)
+  |                       |                  |       | danceability 0.79 vs target 0.88 (+0.46)
+  |                       |                  |       | acousticness 0.18, wants non-acoustic (+0.41)
+--+-----------------------+------------------+-------+----------------------------------------------
+4 | Rooftop Lights        | Indigo Parade    |  4.70 | mood match: happy (+1.50)
+  |                       |                  |       | energy 0.76 vs target 0.80 (+1.92)
+  |                       |                  |       | valence 0.81 vs target 0.85 (+0.48)
+  |                       |                  |       | danceability 0.82 vs target 0.88 (+0.47)
+  |                       |                  |       | acousticness 0.35, wants non-acoustic (+0.33)
+--+-----------------------+------------------+-------+----------------------------------------------
+5 | Laser Garden          | Pulse Arcade     |  3.21 | energy 0.90 vs target 0.80 (+1.80)
+  |                       |                  |       | valence 0.74 vs target 0.85 (+0.45)
+  |                       |                  |       | danceability 0.90 vs target 0.88 (+0.49)
+  |                       |                  |       | acousticness 0.06, wants non-acoustic (+0.47)
+--+-----------------------+------------------+-------+----------------------------------------------
+
+Why this plan (project-authored guidance, not external research)
+  [KB-GOAL-PARTY] Party playlists usually favour high-energy, bright (high-valence), very danceable
+      songs.
+  [KB-MOD-UPBEAT] "Upbeat" is read as high energy (0.80) and high valence (0.85).
+  [KB-STRAT-DIVERSITY-ARTIST] Artist variety subtracts 0.75 points for each earlier pick by the same
+      artist.
+  [KB-POLICY-SYNTHETIC] The catalog is 30 fictional songs; results are not real streaming
+      recommendations.
+  [KB-POLICY-INFERENCE] Inferred targets are assumptions; explicit wording overrides them and
+      unclear requests get a clarification.
+  [KB-POLICY-COVERAGE] The catalog is small and uneven; the assistant returns fewer songs rather
+      than relaxing a hard constraint.
+
+Validation: passed (scores and explanations re-derived, hard constraints, duplicates and sources
+            checked)
+Sources (retrieval score): KB-GOAL-PARTY (0.38), KB-MOD-UPBEAT (0.20), KB-STRAT-DIVERSITY-ARTIST
+                           (0.22), KB-POLICY-SYNTHETIC (0.17), KB-POLICY-INFERENCE (fixed note),
+                           KB-POLICY-COVERAGE (fixed note)

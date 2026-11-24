@@ -1,0 +1,265 @@
+
+==============================================================================
+1. SCENARIO CASES (real system, predefined expectations)
+==============================================================================
+[PASS] study-basic  (study)
+       input   : Find calm instrumental music for studying
+       expected: ok, goal study; every song instrumental (>= 0.5) and calm (energy <= 0.5)
+       actual  : status=ok; goal=study; top 5: Focus Flow, Library Rain, Sunday Slow Dance, Spacewalk Thoughts, Glass Cathedral
+[PASS] workout-basic  (workout)
+       input   : Give me energetic music for a workout
+       expected: ok, goal workout; every song has energy >= 0.8
+       actual  : status=ok; goal=workout; top 5: Laser Garden, Hyperdrive Heartbeat, Rust Belt Anthem, Neon Rain Drive, Gym Hero
+[PASS] party-diverse  (party)
+       input   : Recommend upbeat party music with different artists
+       expected: ok, goal party; five different artists, every song valence >= 0.6
+       actual  : status=ok; goal=party; top 5: Fuego en la Calle, Golden Hour Parade, Sunrise City, Rooftop Lights, Laser Garden
+[PASS] relax-capped  (relaxation)
+       input   : I want something relaxing without too much energy
+       expected: ok, goal relax; hard cap energy <= 0.60 removes songs and every result obeys it
+       actual  : status=ok; goal=relax; top 5: Paper Planes at Dawn, Glass Cathedral, Coffee Shop Stories, Island Time Again, Sunday Slow Dance
+[PASS] unfamiliar-study  (unfamiliar wording)
+       input   : background sounds while I finish my essay
+       expected: goal study, or a safe clarification (never a wrong confident goal)
+       actual  : status=ok; goal=study; top 5: Focus Flow, Midnight Coding, Library Rain, Sunday Slow Dance, Coffee Shop Stories
+[PASS] unfamiliar-workout  (unfamiliar wording)
+       input   : tunes to keep me moving on the treadmill
+       expected: goal workout, or a safe clarification
+       actual  : status=needs_clarification; goal=uncertain; no recommendations
+[PASS] unfamiliar-relax  (unfamiliar wording)
+       input   : something mellow for the evening
+       expected: goal relax, or a safe clarification
+       actual  : status=ok; goal=relax; top 5: Paper Planes at Dawn, Glass Cathedral, Coffee Shop Stories, Island Time Again, Sunday Slow Dance
+[PASS] unfamiliar-party  (unfamiliar wording)
+       input   : what should be playing when the guests arrive tonight
+       expected: goal party, or a safe clarification
+       actual  : status=needs_clarification; goal=uncertain; no recommendations
+[PASS] ambiguous-bare  (ambiguous)
+       input   : music please
+       expected: needs_clarification, no songs
+       actual  : status=needs_clarification; goal=uncertain; no recommendations
+[PASS] ambiguous-vague  (ambiguous)
+       input   : something good
+       expected: needs_clarification, no songs
+       actual  : status=needs_clarification; goal=uncertain; no recommendations
+[PASS] ambiguous-unsure  (ambiguous)
+       input   : I am not sure
+       expected: needs_clarification (the model alone says 'discovery'; no word supports it)
+       actual  : status=needs_clarification; goal=discovery; no recommendations
+[PASS] unsupported-weather  (unsupported)
+       input   : What is the weather like today
+       expected: unsupported, no songs
+       actual  : status=unsupported; goal=unsupported; no recommendations
+[PASS] unsupported-booking  (unsupported)
+       input   : book me a hotel in paris
+       expected: no songs (unsupported or a clarification)
+       actual  : status=needs_clarification; goal=uncertain; no recommendations
+[PASS] unsupported-streaming  (unsupported)
+       input   : play jazz on spotify
+       expected: no songs; it cannot play on a service
+       actual  : status=unsupported; goal=unsupported; no recommendations
+[PASS] unsupported-language  (unsupported)
+       input   : calm instrumental music for studying in spanish
+       expected: ok, and the language request is disclosed as not applied
+       actual  : status=ok; goal=study; top 5: Focus Flow, Library Rain, Sunday Slow Dance, Spacewalk Thoughts, Glass Cathedral
+[PASS] contradiction-goal  (contradictory)
+       input   : Give me calm music for an intense workout
+       expected: needs_clarification naming the energy conflict
+       actual  : status=needs_clarification; goal=workout; no recommendations
+[PASS] contradiction-genre  (contradictory)
+       input   : pop music but no pop
+       expected: needs_clarification
+       actual  : status=needs_clarification; goal=uncertain; no recommendations
+[PASS] contradiction-limits  (contradictory)
+       input   : music for studying
+       options : require=['energy >= 0.90', 'energy <= 0.30']
+       expected: needs_clarification: energy >= 0.9 and energy <= 0.3 cannot both hold
+       actual  : status=needs_clarification; goal=study; no recommendations
+[PASS] insufficient-fewer  (insufficient matches)
+       input   : music for studying
+       options : count=10, require=['energy <= 0.25']
+       expected: ok with fewer than 10 songs, all valid (energy <= 0.25), shortfall stated
+       actual  : status=ok; goal=study; top 2: Glass Cathedral, Moonlit Sonata Sketch
+[PASS] insufficient-none  (insufficient matches)
+       input   : music for studying
+       options : require=['energy >= 0.99']
+       expected: no_match: no song has energy >= 0.99; constraint is not silently relaxed
+       actual  : status=no_match; goal=study; no recommendations
+[PASS] diversity-artists  (diversity)
+       input   : pop party music with different artists
+       options : count=6
+       expected: ok; six songs, six different artists
+       actual  : status=ok; goal=party; top 6: Sunrise City, Golden Hour Parade, Gym Hero, Fuego en la Calle, Heartbeat Static, Rooftop Lights
+[PASS] diversity-genres  (diversity)
+       input   : party music with different genres
+       expected: ok; five songs, five different genres
+       actual  : status=ok; goal=party; top 5: Sunrise City, Fuego en la Calle, Rooftop Lights, Laser Garden, Neon Rain Drive; corrections=1
+[PASS] override-explicit  (explicit override)
+       input   : Find calm instrumental music for studying
+       options : prefer={'energy': 0.9}
+       expected: the explicit energy 0.9 replaces the inferred 0.3 and is recorded as explicit
+       actual  : status=ok; goal=study; top 5: Focus Flow, Laser Garden, Neon Rain Drive, Night Drive Loop, Midnight Coding
+[PASS] hard-exclude  (hard constraint)
+       input   : energetic music for a workout, no pop, no electronic
+       expected: ok; no pop or electronic song, and the exclusion removed candidates
+       actual  : status=ok; goal=workout; top 5: Rust Belt Anthem, Neon Rain Drive, Storm Runner, Basement Riot, Rooftop Lights
+[PASS] hard-tempo  (hard constraint)
+       input   : relaxing music under 80 bpm
+       expected: ok; every song is 80 BPM or slower
+       actual  : status=ok; goal=relax; top 5: Glass Cathedral, Island Time Again, Sunday Slow Dance, Library Rain, Spacewalk Thoughts
+[PASS] malformed-empty  (malformed)
+       input   : ''...
+       expected: invalid_input
+       actual  : status=invalid_input; goal=-; no recommendations
+[PASS] malformed-none  (malformed)
+       input   : None...
+       expected: invalid_input
+       actual  : status=invalid_input; goal=-; no recommendations
+[PASS] malformed-count  (malformed)
+       input   : give me 0 songs of jazz
+       expected: invalid_input (count must be 1-15)
+       actual  : status=invalid_input; goal=discovery; no recommendations
+[PASS] malformed-long  (malformed)
+       input   : 'calm calm calm calm calm calm calm calm calm calm calm calm calm calm calm calm...
+       expected: invalid_input (request too long)
+       actual  : status=invalid_input; goal=-; no recommendations
+[PASS] malformed-pref  (malformed)
+       input   : music for studying
+       options : prefer={'energy': 5}
+       expected: invalid_input (energy must be 0-1)
+       actual  : status=invalid_input; goal=-; no recommendations
+
+==============================================================================
+2. INTENT MODEL: keyword baseline vs Naive Bayes (held-out file, reported not pass/fail)
+==============================================================================
+[PASS] dataset integrity: no sentence appears in more than one split
+[PASS] dataset integrity: training labels are the six trained labels only
+[PASS] dataset integrity: held-out file covers all seven evaluation labels
+
+settings chosen on the DEV file only: alpha=0.1, abstain below 0.5, bigrams=False  (dev accuracy 0.941; the held-out file was not used to choose them)
+sizes: train 144, dev 34, held-out 66
+
+held-out accuracy (same examples, same labels):
+  all 66 examples            n=66   keyword baseline 18 (27.3%)   Naive Bayes 45 (68.2%)
+  five listening goals only  n=50   keyword baseline 12 (24.0%)   Naive Bayes 36 (72.0%)
+  label: study               n=10   keyword baseline  4 (40.0%)   Naive Bayes  6 (60.0%)
+  label: workout             n=10   keyword baseline  1 (10.0%)   Naive Bayes  5 (50.0%)
+  label: party               n=10   keyword baseline  2 (20.0%)   Naive Bayes  9 (90.0%)
+  label: relax               n=10   keyword baseline  2 (20.0%)   Naive Bayes  8 (80.0%)
+  label: discovery           n=10   keyword baseline  3 (30.0%)   Naive Bayes  8 (80.0%)
+  label: unsupported         n=10   keyword baseline  0 (0.0%)   Naive Bayes  5 (50.0%)
+  label: uncertain           n= 6   keyword baseline  6 (100.0%)   Naive Bayes  4 (66.7%)
+
+  specialized right, baseline wrong: 29 | baseline right, specialized wrong: 2 | both wrong: 19
+
+Naive Bayes failures (expected -> predicted; 'uncertain' = the model abstained):
+  [abstained]       study -> uncertain   (relative score 0.00)  soundtrack for my midterm preparation
+  [abstained]       study -> uncertain   (relative score 0.47)  wordless tracks for writing my dissertation
+  [abstained]       study -> uncertain   (relative score 0.26)  I need to zone in on my project report
+  [abstained]       study -> uncertain   (relative score 0.00)  brainwork soundtrack please
+  [abstained]     workout -> uncertain   (relative score 0.43)  music to get my heart rate up
+  [abstained]     workout -> uncertain   (relative score 0.25)  pre game hype songs before the match
+  [abstained]     workout -> uncertain   (relative score 0.46)  help me smash my personal best on deadlifts
+  [abstained]     workout -> uncertain   (relative score 0.44)  warm up playlist for the track
+  [WRONG    ]     workout -> discovery   (relative score 0.68)  I want to feel unstoppable during my sprint intervals
+  [abstained]       party -> uncertain   (relative score 0.00)  dancefloor fillers please
+  [abstained]       relax -> uncertain   (relative score 0.45)  nothing intense just mellow
+  [abstained]       relax -> uncertain   (relative score 0.00)  music to ease anxiety
+  [abstained]   discovery -> uncertain   (relative score 0.35)  I keep listening to the same songs so shake things up
+  [WRONG    ]   discovery -> study       (relative score 0.59)  help me expand my playlist with unknown tracks
+  [abstained] unsupported -> uncertain   (relative score 0.30)  what is the stock price of apple
+  [abstained] unsupported -> uncertain   (relative score 0.00)  remind me to call the dentist at noon
+  [abstained] unsupported -> uncertain   (relative score 0.43)  show me pictures of cats
+  [abstained] unsupported -> uncertain   (relative score 0.46)  find the lyrics to bohemian rhapsody
+  [abstained] unsupported -> uncertain   (relative score 0.43)  book a table at an italian restaurant
+  [WRONG    ]   uncertain -> discovery   (relative score 0.58)  recommend some music
+  [WRONG    ]   uncertain -> discovery   (relative score 0.69)  I am not sure
+
+baseline wins (baseline right, Naive Bayes wrong):
+    uncertain: baseline uncertain, Naive Bayes discovery (0.58)  recommend some music
+    uncertain: baseline uncertain, Naive Bayes discovery (0.69)  I am not sure
+
+pipeline goal decision with retrieval evidence rules (POST-HOC, not an independent measurement):
+  correct 30/66 (45.5%) vs Naive Bayes alone 45/66
+  confident wrong answers (neither correct nor an abstention): 1 in the pipeline vs 4 for the model alone
+  five goals only: 19/50
+
+coverage vs precision (an 'answer' is any label other than 'uncertain'):
+  keyword baseline     answered 13/66, correct when answered 12 (92.3%)
+  Naive Bayes          answered 45/66, correct when answered 41 (91.1%)
+  pipeline (post-hoc)  answered 25/66, correct when answered 24 (96.0%)
+
+==============================================================================
+3. RETRIEVAL ENABLED vs DISABLED (same input, same catalog)
+==============================================================================
+[PASS] answerable
+       input   : Find calm instrumental music for studying
+       expected: with retrieval: a plan and songs; without: a clarification (nothing explicit to score)
+       with    : status=ok; goal=study; top 5: Focus Flow, Library Rain, Sunday Slow Dance, Spacewalk Thoughts, Glass Cathedral
+       without : status=needs_clarification; goal=study; no recommendations
+[PASS] workout-genre
+       input   : pop music for my workout
+       expected: retrieval changes the ranking and raises mean energy of the results
+       with    : status=ok; goal=workout; top 5: Hyperdrive Heartbeat, Gym Hero, Sunrise City, Golden Hour Parade, Laser Garden
+       without : status=ok; goal=workout; top 5: Sunrise City, Gym Hero, Golden Hour Parade, Heartbeat Static, Hyperdrive Heartbeat
+       measured: mean energy 0.88 vs 0.82; mean instrumentalness 0.14 vs 0.02; distinct artists 4 vs 4; shared songs 4/5
+[PASS] variety
+       input   : pop party music with different artists  [count=6]
+       expected: retrieval reads 'different artists' and gives 6 distinct artists; without it artists repeat
+       with    : status=ok; goal=party; top 6: Sunrise City, Golden Hour Parade, Gym Hero, Fuego en la Calle, Heartbeat Static, Rooftop Lights
+       without : status=ok; goal=discovery; top 6: Sunrise City, Gym Hero, Golden Hour Parade, Heartbeat Static, Hyperdrive Heartbeat, Midnight Coding
+       measured: mean energy 0.79 vs 0.75; mean instrumentalness 0.02 vs 0.14; distinct artists 6 vs 5; shared songs 4/6
+[PASS] study-genre
+       input   : jazz for studying
+       expected: retrieval raises mean instrumentalness of the results
+       with    : status=ok; goal=study; top 5: Sunday Slow Dance, Coffee Shop Stories, Focus Flow, Midnight Coding, Library Rain
+       without : status=ok; goal=study; top 5: Coffee Shop Stories, Sunday Slow Dance, Sunrise City, Midnight Coding, Storm Runner
+       measured: mean energy 0.38 vs 0.57; mean instrumentalness 0.76 vs 0.43; distinct artists 3 vs 4; shared songs 3/5
+[PASS] no-effect
+       input   : chill lofi for studying
+       expected: explicit genre+mood already decide the order: same order, different scores (retrieval has no ranking effect)
+       with    : status=ok; goal=study; top 5: Midnight Coding, Library Rain, Focus Flow, Spacewalk Thoughts, Late Bus Home
+       without : status=ok; goal=study; top 5: Midnight Coding, Library Rain, Focus Flow, Spacewalk Thoughts, Late Bus Home
+       measured: mean energy 0.39 vs 0.39; mean instrumentalness 0.72 vs 0.72; distinct artists 4 vs 4; shared songs 5/5
+
+==============================================================================
+4. GUARDRAIL EFFECTIVENESS (injected engine faults, guardrails on vs off)
+==============================================================================
+Each fault is injected into the recommendation engine on purpose. A case passes when the faulty output
+reaches the user with guardrails OFF (the fault is real) and does NOT with guardrails ON.
+
+[PASS] duplicate-song: the engine returns the first song twice
+       input        : Find calm instrumental music for studying
+       guardrails OFF: delivered defective output = True  (status ok)
+       guardrails ON : status ok; defective output delivered = False; corrections: rerank_with_reference_engine addressed DUPLICATE_SONG
+[PASS] nonexistent-song: the engine invents a song (id 777)
+       input        : Find calm instrumental music for studying
+       guardrails OFF: delivered defective output = True  (status ok)
+       guardrails ON : status ok; defective output delivered = False; corrections: rerank_with_reference_engine addressed UNKNOWN_SONG
+[PASS] constraint-violation: the engine ignores 'no pop' and puts a pop song first
+       input        : energetic music for a workout  [exclude_genres=['pop']]
+       guardrails OFF: delivered defective output = True  (status ok)
+       guardrails ON : status ok; defective output delivered = False; corrections: rerank_with_reference_engine addressed CONSTRAINT_VIOLATION,EXPLANATION_MISMATCH,SCORE_MISMATCH
+[PASS] wrong-score: the engine reports a score 1.5 too high
+       input        : Find calm instrumental music for studying
+       guardrails OFF: delivered defective output = True  (status ok)
+       guardrails ON : status ok; defective output delivered = False; corrections: rerank_with_reference_engine addressed EXPLANATION_MISMATCH,SCORE_MISMATCH
+[PASS] wrong-explanation: the engine attaches song 2's explanation to song 1
+       input        : Find calm instrumental music for studying
+       guardrails OFF: delivered defective output = True  (status ok)
+       guardrails ON : status ok; defective output delivered = False; corrections: rerank_with_reference_engine addressed EXPLANATION_MISMATCH
+[PASS] missed-variety: the engine ignores variety unless the penalty is at least 3.0
+       input        : pop party music with different artists  [count=6]
+       guardrails OFF: delivered defective output = True  (status ok)
+       guardrails ON : status ok; defective output delivered = False; corrections: strengthen_variety addressed DIVERSITY_GOAL_MISSED
+
+==============================================================================
+SUMMARY
+==============================================================================
+  scenario cases         30/30 passed
+  dataset integrity      3/3 passed
+  retrieval comparison   5/5 passed
+  guardrail faults       6/6 passed
+
+  TOTAL: 44/44 checks passed, 0 failed
+  (Passing shows the system behaves as specified on these cases; it does not prove recommendation quality.)

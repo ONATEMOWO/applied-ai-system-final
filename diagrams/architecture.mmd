@@ -1,0 +1,76 @@
+flowchart TD
+    %% VibeFinder AI: every box below is implemented. File names are in brackets.
+
+    %% ---------- nodes ----------
+    USER(["User request<br/>text + options<br/>[assistant.py CLI]"])
+    VALIDATE{"Input validation<br/>empty, too long, bad count,<br/>bad options<br/>[guardrails.py]"}
+    CLASSIFY["Intent classifier<br/>Naive Bayes + abstention<br/>[intent.py]"]
+    PARSE["Explicit request parser<br/>count, genre, mood, decade,<br/>exclusions, hard limits<br/>[intent.py]"]
+    ROUTE{"Route decision<br/>[agent.py]"}
+    RETRIEVE["Knowledge retrieval<br/>TF-IDF, stable KB ids, scores<br/>[retrieval.py]"]
+    RESOLVE["Goal resolution<br/>goal words in the request can<br/>correct the model's goal<br/>[agent.py]"]
+    PLAN["Recommendation plan<br/>soft preferences, hard constraints,<br/>ranking mode, variety, count<br/>[agent.py]"]
+    FILTER["Filter catalog by hard constraints<br/>[agent.py]"]
+    ENGINE["Existing Module 3 engine<br/>rank_songs: weighted scoring,<br/>modes, variety rerank<br/>[recommender.py]"]
+    CHECK{"Output validation<br/>re-derive scores and explanations,<br/>constraints, duplicates,<br/>unknown songs, order, sources<br/>[guardrails.py]"}
+    CORRECT["Bounded correction<br/>at most 2 steps, no repeats<br/>rerank_with_reference_engine<br/>strengthen_variety<br/>[agent.py]"]
+    RESPONSE["Grounded response<br/>goal, preferences with sources,<br/>songs, scores, explanations,<br/>assumptions, validation<br/>[assistant.py]"]
+    OUTPUT(["Output<br/>text or JSON"])
+    CLARIFY["Clarification<br/>ambiguous, contradictory,<br/>conflicting, no preferences"]
+    STOP["Stop with a reason<br/>invalid input, unsupported,<br/>no match, results withheld"]
+    TRACE[("Runtime trace<br/>structured events<br/>[traces/*.json]")]
+    EVAL["Evaluation harness<br/>python3 -m src.evaluate<br/>[evaluate.py]"]
+    HUMAN["Human review (outside the program)<br/>student reads traces, evaluation log,<br/>sample responses and model card"]
+    KB[("Knowledge collection<br/>5 project-authored documents,<br/>39 sections<br/>[knowledge/*.md]")]
+    CATALOG[("Song catalog<br/>30 fictional songs<br/>[data/songs.csv]")]
+    DATASET[("Synthetic intent dataset<br/>train, dev, held-out<br/>[data/intent_*_v1.csv]")]
+
+    %% ---------- main data flow ----------
+    USER --> VALIDATE
+    VALIDATE -->|"invalid"| STOP
+    VALIDATE -->|"valid"| CLASSIFY
+    VALIDATE -->|"valid"| PARSE
+    CLASSIFY --> ROUTE
+    PARSE --> ROUTE
+    ROUTE -->|"out of scope"| STOP
+    ROUTE -->|"contradiction or several genres"| CLARIFY
+    ROUTE -->|"recommend"| RETRIEVE
+    RETRIEVE --> RESOLVE
+    RESOLVE --> PLAN
+    PLAN -->|"conflict or nothing to score"| CLARIFY
+    PLAN --> FILTER
+    FILTER -->|"no candidates"| STOP
+    FILTER --> ENGINE
+    ENGINE --> CHECK
+    CHECK -->|"passes"| RESPONSE
+    CHECK -->|"fixable problem"| CORRECT
+    CORRECT --> CHECK
+    CHECK -->|"errors remain after budget"| STOP
+    RESPONSE --> OUTPUT
+    CLARIFY --> OUTPUT
+    STOP --> OUTPUT
+
+    %% ---------- data sources and logging ----------
+    DATASET -.->|"trains"| CLASSIFY
+    KB -.->|"sections"| RETRIEVE
+    CATALOG -.->|"songs"| FILTER
+    CATALOG -.->|"songs"| CHECK
+    ROUTE -.->|"events"| TRACE
+    PLAN -.->|"events"| TRACE
+    CHECK -.->|"events"| TRACE
+    CORRECT -.->|"events"| TRACE
+
+    %% ---------- evaluation and human oversight ----------
+    EVAL -.->|"runs predefined requests"| USER
+    EVAL -.->|"PASS or FAIL summary"| HUMAN
+    TRACE -.->|"reviewed by"| HUMAN
+    OUTPUT -.->|"sampled for review"| HUMAN
+
+    classDef store fill:#eef3fb,stroke:#4a6a9a;
+    classDef gate fill:#fff4e0,stroke:#b07a1a;
+    classDef terminal fill:#e9f7ec,stroke:#3b8a52;
+    classDef oversight fill:#f6e9f7,stroke:#8a3b8f;
+    class KB,CATALOG,DATASET,TRACE store;
+    class VALIDATE,CHECK,ROUTE gate;
+    class USER,OUTPUT terminal;
+    class EVAL,HUMAN oversight;
