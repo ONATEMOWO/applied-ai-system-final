@@ -141,14 +141,10 @@ rank → validate_results → ok      sources_checked → final_status ok (1 cor
 * **Created (documentation):** `README.md`, `model_card.md`, this file, `docs/design.md`, `docs/presentation.md`, `diagrams/architecture.mmd`, `assets/README.md`, `assets/logs/*`.
 * **Modified:** `requirements.txt` (now `pytest` only).
 
-## 9. Outstanding human verification
+## 9. Final review and verification
 
-Nothing below has been done by a person; none of it is claimed:
+An independent ChatGPT-assisted audit of commit 754fb87 reproduced 499 passing tests with two Git-checkout-dependent tests skipped, and all 44 evaluation checks passed.
 
-* The student reading, running and approving the work (the README commands, `python3 -m src.evaluate`, `python3 -m pytest`).
-* Review of the synthetic datasets and the knowledge text by someone other than their author.
-* Rendering the Mermaid diagram in a real renderer (GitHub or the Mermaid live editor).
-* Editing and approving the first-person proposals: the "proposed personal takeaway" in the model card (Question 3) and the portfolio reflection in the README.
-* Confirming that the account of AI collaboration in the model card (Question 4) matches what the student remembers.
-* Any human evaluation of whether the recommendations feel good; none was performed.
-* Pushing to GitHub and submitting the form (deliberately not done by the agent).
+The student reviewed and approved the accepted and revised engineering decisions and personal learning takeaway recorded in the model card.
+
+The implementation was pushed to the separate public GitHub repository. Human evaluation of recommendation quality and external visual rendering of the Mermaid diagram remain outstanding.

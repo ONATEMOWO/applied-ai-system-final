@@ -169,7 +169,7 @@ The system has a low direct-harm profile because it is offline, fictional and re
 
 ### Question 3: What surprised you while testing your AI's reliability?
 
-I cannot report the student's subjective surprise, so this section records what the experiments actually showed, followed by a proposed takeaway for the student to review.
+The following findings came from the recorded experiments and informed my approved personal takeaway.
 
 1. **A good aggregate hid a failure on a required example.** The classifier scored 68.2% on the held-out file, yet it labelled "Recommend upbeat party music with different artists" as `discovery` (relative score 0.85), because it keyed on "recommend" and "artists". The first run of the README example produced a discovery plan instead of a party plan.
 2. **The safer design answers much less.** The evidence rules reduced confident wrong answers from 4 to 1 and raised precision when answering to 96.0%, but exact-label accuracy fell from 68.2% to 45.5% and the pipeline answered 25 requests instead of 45. Making the system more careful and making it more useful pulled in opposite directions.
@@ -177,7 +177,7 @@ I cannot report the student's subjective surprise, so this section records what 
 4. **Retrieval did not always change the ranking.** For "chill lofi for studying" the top five were identical with and without retrieval (only the scores changed), and for "pop music for my workout" mean energy rose only from 0.82 to 0.88. Its largest effect was making a request with nothing explicit ("calm instrumental music for studying") answerable at all.
 5. **A variety penalty is not a variety guarantee.** With the penalty the system's own knowledge selected (0.75), "party music with different genres" still repeated a genre while 19 other genres were available; only the validator caught it, and a stronger penalty fixed it.
 
-*Proposed personal takeaway (for student review; edit or delete if it does not match your experience):* "I learned not to trust a headline number or a green test run: the model's accuracy hid a wrong answer on my own demo request, and my tests only became trustworthy after I tried to break them."
+**Personal takeaway:** This project helped me understand that model accuracy alone does not establish system reliability. Retrieval, validation, error handling, and meaningful evaluation matter because an apparently confident prediction can still be wrong.
 
 ### Question 4: Describe your collaboration with AI during this project. Identify one suggestion you accepted and one you did not accept as written, and say why you rejected or changed it.
 
@@ -185,11 +185,17 @@ I cannot report the student's subjective surprise, so this section records what 
 
 **A suggestion that was accepted (adopted as written): the specialized behaviour is a small Naive Bayes classifier compared against a keyword baseline.** The brief offered it as one suitable option; the agent recommended it over an embedding model or a hosted model because it needs no download or key, trains in milliseconds, is inspectable, and the baseline makes the gain measurable. It was adopted unchanged, and the held-out comparison above is the evidence for and against it.
 
-**A suggestion that was changed from its first version: letting the classifier alone choose the goal profile.** The agent's first design applied whatever goal the classifier returned. Test evidence contradicted it: one of the three required example requests was misclassified with a relative score of 0.85, and the held-out run showed 4 confident wrong answers. The design was therefore changed, not adopted as written: a profile is applied only if the request contains a word from that profile's knowledge keywords, and a literal goal word can correct the model's label. The cost (lower coverage, 68.2% → 45.5% exact-label accuracy) is reported rather than hidden, and the rule was **not** tuned on the held-out sentences (the remaining false corroboration on "new year's eve" is left as a documented failure). This revision was made by the agent in response to its own test results; the student has not independently reviewed it.
+**A suggestion that was changed from its first version: letting the classifier alone choose the goal profile.** The agent's first design applied whatever goal the classifier returned. Test evidence contradicted it: one of the three required example requests was misclassified with a relative score of 0.85, and the held-out run showed 4 confident wrong answers. The design was therefore changed, not adopted as written: a profile is applied only if the request contains a word from that profile's knowledge keywords, and a literal goal word can correct the model's label. The cost (lower coverage, 68.2% → 45.5% exact-label accuracy) is reported rather than hidden, and the rule was **not** tuned on the held-out sentences (the remaining false corroboration on "new year's eve" is left as a documented failure). This revision was initially made by the agent. Following the independent AI-assisted audit, the student reviewed and approved the revised approach.
 
 **Related changes made during the build, each driven by evidence:** the smoothing constant I first guessed (1.0) was replaced by 0.1 after the dev-set grid search (82.4% → 94.1% on dev); a dataset-overlap check that falsely flagged "music" against "music please" was rewritten to compare full normalized text; and two surviving mutants led to two stronger guardrail tests.
 
 **Constraints that shaped the design.** The brief's instruction to avoid external models and paid APIs ruled out the more capable option an AI assistant would otherwise default to (a hosted language model). It is a student-set constraint rather than a rejected AI suggestion, but it is why the system uses retrieval-augmented *template* generation and a small classifier, and why the documents say plainly that it is not an LLM.
+
+### Student-approved engineering decisions
+
+I accepted the recommendation to use a small Naive Bayes classifier instead of a large external language model because it makes the system reproducible, inexpensive, inspectable, and measurable against a keyword baseline.
+
+After reviewing the results, I would not accept relying entirely on the classifier to determine the listening goal. It incorrectly interpreted a party request as discovery. I approved the revised approach that requires supporting evidence and requests clarification when needed, even at the cost of lower coverage.
 
 ## 11. Future improvements
 
@@ -206,4 +212,4 @@ I cannot report the student's subjective surprise, so this section records what 
 
 * **Automated, run by the coding agent:** the full test suite, the evaluation harness (44/44 checks), the tests that re-run every command printed in the README and compare the output, the traces-are-current test, structural checks of the Mermaid file, and temporary sabotage checks of the guardrails. Outputs are saved in [assets/logs/](assets/logs).
 * **Not done:** human evaluation of recommendation quality; review of the datasets by anyone other than their author; rendering of the Mermaid diagram in an external renderer (no renderer was available offline, so only structural checks were run).
-* **For the student before submitting:** read and edit the first-person proposals (Question 3 takeaway, the portfolio reflection in the README), and confirm the account of the collaboration in Question 4 matches what happened.
+* **Student review:** The engineering decisions and personal takeaway were approved following an independent AI-assisted audit. Human evaluation of recommendation quality remains outstanding.
