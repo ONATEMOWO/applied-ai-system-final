@@ -77,7 +77,7 @@ artists and genres matters more than usual. Both are assumptions, not facts abou
 ```profile
 kind: goal
 goal: discovery
-keywords: discover, discovery, explore, new, surprise, different, fresh, unfamiliar, goal_discovery
+keywords: discover, discovery, explore, new, surprise, something different, fresh, unfamiliar, goal_discovery
 prefs: popularity=40
 mode: balanced
 diversity: artist=0.25, genre=0.20

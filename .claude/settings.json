@@ -7,7 +7,9 @@
       "Bash(sed -i '' 's/different music by many artists/different music by several artists/' tests/test_retrieval.py)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(python3 -m pytest tests/test_intent.py -q)"
+      "Bash(python3 -m pytest tests/test_intent.py -q)",
+      "Bash(python3 -m src.assistant --query \"Find calm instrumental music for studying\")",
+      "Bash(python3 -m src.assistant -q \"Recommend upbeat party music with different artists\" --format list --width 100)"
     ]
   }
 }
