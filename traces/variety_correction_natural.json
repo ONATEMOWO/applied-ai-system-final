@@ -1,6 +1,6 @@
 {
   "description": "NOT injected: the first ranking missed 'different genres'; validation flagged it and one stronger re-rank fixed it.",
-  "command": "python3 -m src.assistant --query \"party music with different genres\" --trace-file traces/variety_correction_natural.json",
+  "command": "python3 -m src.assistant --query \"party music with different genres\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "party music with different genres",
   "status": "ok",

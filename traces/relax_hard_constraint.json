@@ -1,6 +1,6 @@
 {
   "description": "A hard energy cap parsed from the wording filters the catalog before ranking.",
-  "command": "python3 -m src.assistant --query \"I want something relaxing without too much energy\" --trace-file traces/relax_hard_constraint.json",
+  "command": "python3 -m src.assistant --query \"I want something relaxing without too much energy\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "I want something relaxing without too much energy",
   "status": "ok",

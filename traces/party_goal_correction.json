@@ -1,6 +1,6 @@
 {
   "description": "The intent model says 'discovery'; the word 'party' corrects the goal; retrieval selects artist variety.",
-  "command": "python3 -m src.assistant --query \"Recommend upbeat party music with different artists\" --trace-file traces/party_goal_correction.json",
+  "command": "python3 -m src.assistant --query \"Recommend upbeat party music with different artists\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "Recommend upbeat party music with different artists",
   "status": "ok",

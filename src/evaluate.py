@@ -380,7 +380,7 @@ def write_traces(directory: Path) -> List[Dict[str, str]]:
 
     def real(name: str, description: str, query: str, flags: str = "", **options: Any) -> None:
         result = agent.run(AssistantRequest(query=query, **options))
-        runs.append((name, description, f'python3 -m src.assistant --query "{query}"{flags} --trace-file traces/{name}.json', None, result))
+        runs.append((name, description, f'python3 -m src.assistant --query "{query}"{flags} --trace-file my_trace.json', None, result))
 
     def injected(name: str, description: str, fault_id: str) -> None:
         result = run_fault(faults[fault_id], guardrails=True)
@@ -411,7 +411,9 @@ def write_traces(directory: Path) -> List[Dict[str, str]]:
     index = ["# Runtime traces", "",
              "Structured events recorded by the application agent (tool calls, tool results, decisions, validation, corrections)",
              "for representative requests. They are observable execution records, not reasoning transcripts, and contain no timestamps,",
-             "so regenerating them gives identical files (`tests/test_evaluate.py` checks this).", "",
+             "so regenerating them gives identical files (`tests/test_evaluate.py` checks this). For traces from real runs, the command shown",
+             "writes a file whose `events` array is identical to the one committed here (also checked). The two traces marked as",
+             "injected faults come from `python3 -m src.evaluate`, because they replace the recommendation engine on purpose.", "",
              "Regenerate all of them with `python3 -m src.evaluate --write-traces traces`.", "",
              "| File | What it shows | Status | Command |", "|---|---|---|---|"]
     entries = []

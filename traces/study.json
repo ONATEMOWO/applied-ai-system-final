@@ -1,6 +1,6 @@
 {
   "description": "Study request: classifier, retrieval, plan from three sections, validation passes.",
-  "command": "python3 -m src.assistant --query \"Find calm instrumental music for studying\" --trace-file traces/study.json",
+  "command": "python3 -m src.assistant --query \"Find calm instrumental music for studying\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "Find calm instrumental music for studying",
   "status": "ok",

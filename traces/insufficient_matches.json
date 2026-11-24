@@ -1,6 +1,6 @@
 {
   "description": "Only a few songs satisfy the hard limit, so fewer than requested are returned.",
-  "command": "python3 -m src.assistant --query \"music for studying\" --count 10 --require 'energy<=0.25' --trace-file traces/insufficient_matches.json",
+  "command": "python3 -m src.assistant --query \"music for studying\" --count 10 --require 'energy<=0.25' --trace-file my_trace.json",
   "injected_fault": null,
   "query": "music for studying",
   "status": "ok",

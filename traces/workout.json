@@ -1,6 +1,6 @@
 {
   "description": "Workout request: explicit mood from the wording plus a retrieved goal profile.",
-  "command": "python3 -m src.assistant --query \"Give me energetic music for a workout\" --trace-file traces/workout.json",
+  "command": "python3 -m src.assistant --query \"Give me energetic music for a workout\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "Give me energetic music for a workout",
   "status": "ok",

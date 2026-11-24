@@ -1,6 +1,6 @@
 {
   "description": "Contradictory goal and wording: the agent stops and asks instead of guessing.",
-  "command": "python3 -m src.assistant --query \"Give me calm music for an intense workout\" --trace-file traces/clarification_conflict.json",
+  "command": "python3 -m src.assistant --query \"Give me calm music for an intense workout\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "Give me calm music for an intense workout",
   "status": "needs_clarification",

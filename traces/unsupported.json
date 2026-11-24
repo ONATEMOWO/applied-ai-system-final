@@ -1,6 +1,6 @@
 {
   "description": "Out-of-scope request: routed to 'unsupported' before retrieval.",
-  "command": "python3 -m src.assistant --query \"What is the weather like today\" --trace-file traces/unsupported.json",
+  "command": "python3 -m src.assistant --query \"What is the weather like today\" --trace-file my_trace.json",
   "injected_fault": null,
   "query": "What is the weather like today",
   "status": "unsupported",

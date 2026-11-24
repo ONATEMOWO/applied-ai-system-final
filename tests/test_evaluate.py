@@ -104,3 +104,23 @@ def test_committed_traces_match_what_the_code_produces_now(tmp_path):
     fresh = {p.name: p.read_text(encoding="utf-8") for p in tmp_path.iterdir()}
     committed = {p.name: p.read_text(encoding="utf-8") for p in REPO_TRACES.iterdir()}
     assert fresh == committed
+
+
+def test_the_command_in_each_real_trace_reproduces_its_events(tmp_path):
+    """Traces of real runs must be reproducible with the CLI command recorded inside them."""
+    import shlex
+    import src.assistant as assistant
+    checked = 0
+    for path in sorted(REPO_TRACES.glob("*.json")):
+        committed = json.loads(path.read_text(encoding="utf-8"))
+        if committed["injected_fault"] is not None:
+            continue
+        argv = shlex.split(committed["command"])
+        assert argv[:3] == ["python3", "-m", "src.assistant"], committed["command"]
+        argv = [str(tmp_path / "out.json") if part == "my_trace.json" else part for part in argv[3:]]
+        assistant.main(argv)
+        produced = json.loads((tmp_path / "out.json").read_text(encoding="utf-8"))
+        assert produced["events"] == committed["events"], path.name
+        assert produced["status"] == committed["status"] and produced["query"] == committed["query"]
+        checked += 1
+    assert checked >= 8

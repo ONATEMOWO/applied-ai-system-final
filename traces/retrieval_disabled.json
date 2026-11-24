@@ -1,6 +1,6 @@
 {
   "description": "Same study request with retrieval disabled: nothing explicit to score, so it clarifies.",
-  "command": "python3 -m src.assistant --query \"Find calm instrumental music for studying\" --no-retrieval --trace-file traces/retrieval_disabled.json",
+  "command": "python3 -m src.assistant --query \"Find calm instrumental music for studying\" --no-retrieval --trace-file my_trace.json",
   "injected_fault": null,
   "query": "Find calm instrumental music for studying",
   "status": "needs_clarification",
