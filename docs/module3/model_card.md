@@ -1,3 +1,5 @@
+> **Archived Module 3 documentation.** This file describes the original Music Recommender Simulation (Module 3) exactly as submitted; only its relative links were adjusted to resolve from `docs/module3/`. The current project documentation is in the repository root: [README.md](../../README.md), [model_card.md](../../model_card.md), [ai_interactions.md](../../ai_interactions.md).
+
 # 🎧 Model Card: Music Recommender Simulation
 
 ## 1. Model Name

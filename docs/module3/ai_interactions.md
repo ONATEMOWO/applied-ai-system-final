@@ -1,3 +1,5 @@
+> **Archived Module 3 documentation.** This file describes the original Music Recommender Simulation (Module 3) exactly as submitted; only its relative links were adjusted to resolve from `docs/module3/`. The current project documentation is in the repository root: [README.md](../../README.md), [model_card.md](../../model_card.md), [ai_interactions.md](../../ai_interactions.md).
+
 # AI Interactions Log
 
 > **Stretch features only.** This file documents the four stretch features that were attempted (extra attributes, ranking modes, variety reranking, visual table), plus the starter's two general sections. It is not required for the core project.
